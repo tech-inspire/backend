@@ -1,0 +1,61 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries:
+     - "../**/*.sql"
+     - "../queries/**/*.sql"
+    schema: "../../../../../migrations/*.sql"
+    gen:
+      go:
+        package: "sqlc"
+        out: "."
+        sql_package: "pgx/v5"
+        emit_all_enum_values: true
+        emit_db_tags: true
+        emit_interface: true
+        emit_prepared_queries: true
+        emit_enum_valid_method: true
+        emit_empty_slices: true
+#        emit_params_struct_pointers: true
+#        emit_result_struct_pointers: true
+        emit_pointers_for_null_types: true
+        query_parameter_limit: 2
+        overrides:
+          # Types overwrites
+          - db_type: "pg_catalog.timestamp"
+            nullable: true
+            go_type:
+              import: "time"
+              type: "Time"
+              pointer: true
+          - db_type: "pg_catalog.timestamp"
+            go_type:
+              import: "time"
+              type: "Time"
+          - db_type: "pg_catalog.interval"
+            nullable: true
+            go_type:
+              import: "time"
+              type: "Duration"
+              pointer: true
+          - db_type: "pg_catalog.interval"
+            go_type:
+              import: "time"
+              type: "Duration"
+          - db_type: "pg_catalog.numeric"
+            go_type:
+              import: "github.com/shopspring/decimal"
+              type: "Decimal"
+          - db_type: "pg_catalog.numeric"
+            nullable: true
+            go_type:
+              import: "github.com/shopspring/decimal"
+              type: "Decimal"
+          - db_type: "uuid"
+            go_type: "github.com/google/uuid.UUID"
+          - db_type: "uuid"
+            go_type:
+              import: "github.com/google/uuid"
+              type: "UUID"
+              pointer: true
+            nullable: true
