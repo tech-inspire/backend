@@ -4,14 +4,15 @@ from datetime import datetime, timezone
 from embeddings.v1 import events_pb2
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from app.services.clip_embedder import embed_image
+from app.services.clip_embedder import ClipEmbedder
 from app.worker.downloader import ImageDownloader
 
 
 class MessageProcessor:
-    def __init__(self, js_client):
+    def __init__(self, js_client, embedder: ClipEmbedder):
         self.js = js_client
         self.downloader = ImageDownloader()
+        self.embedder = embedder
 
     async def process(self, msg) -> None:
         try:
@@ -19,7 +20,7 @@ class MessageProcessor:
             req.ParseFromString(msg.data)
 
             img = await self.downloader.download(req.image_url)
-            vector = embed_image(img).tolist()
+            vector = self.embedder.embed_image(img).tolist()
 
             now = datetime.now(timezone.utc)
             ts = Timestamp()

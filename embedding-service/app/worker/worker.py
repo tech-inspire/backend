@@ -1,13 +1,14 @@
 import asyncio
 
+from app.services.clip_embedder import ClipEmbedder
 from app.worker.config import CONCURRENCY, DURABLE, PULL_SUBJ
 from app.worker.nats_client import get_jetstream
 from app.worker.processor import MessageProcessor
 
 
-async def start_worker():
+async def start_worker(embedder: ClipEmbedder):
     js = await get_jetstream()
-    processor = MessageProcessor(js)
+    processor = MessageProcessor(js, embedder)
 
     consumer = await js.pull_subscribe(
         subject=PULL_SUBJ,

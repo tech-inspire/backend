@@ -3,27 +3,27 @@ import threading
 
 from app.grpc import embedding
 from app.services import clip_embedder
+from app.services.clip_embedder import ClipEmbedder
 from app.worker.worker import start_worker
 
 
-def run_worker_loop():
+def run_worker_loop(embedder: ClipEmbedder):
     try:
-        asyncio.run(start_worker())
+        asyncio.run(start_worker(embedder))
     except KeyboardInterrupt:
         pass
 
 
 def main():
-    # print("Preloading captioner...")
-    # captioner.preload()
-    print("Preloading clip_embedder...")
-    clip_embedder.preload()
+    embedder = clip_embedder.ClipEmbedder()
 
     print("Starting gRPC server...")
-    grpc_server = embedding.start_grpc_server()
+    grpc_server = embedding.start_grpc_server(embedder)
 
     print("Starting NATS Jetstream worker...")
-    threading.Thread(target=run_worker_loop, daemon=True).start()
+    threading.Thread(
+        target=run_worker_loop, args=(embedder,), daemon=True
+    ).start()
 
     try:
         grpc_server.wait_for_termination()

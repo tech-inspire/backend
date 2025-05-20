@@ -1,12 +1,12 @@
 import torch
 
 
-def try_compile(model: torch.nn.Module):
+def try_compile_model(model: torch.nn.Module):
     if hasattr(torch, "compile"):
         try:
-            print("compiling model")
+            print("Compiling model")
             model = torch.compile(model, mode="reduce-overhead")
-            print("compiling completed")
+            print("Model compiling completed")
         except Exception:
             pass
     return model
