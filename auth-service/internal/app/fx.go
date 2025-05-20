@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -81,7 +80,7 @@ func Run() {
 
 		//
 
-		fx.Provide(jwt.NewManager),
+		fx.Provide(jwt.NewSigner),
 		fx.Provide(
 			fx.Annotate(generator.New, fx.As(new(service.Generator))),
 		),
@@ -97,7 +96,6 @@ func Run() {
 	}
 
 	app := fx.New(options...)
-	fmt.Println("here", app.Err())
 
 	err := app.Start(context.Background())
 	if err != nil {

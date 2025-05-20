@@ -1,26 +1,24 @@
-package middleware
+package authmiddleware
 
 import (
 	"context"
 	"net/http"
 
 	"connectrpc.com/authn"
-	"github.com/tech-inspire/api-contracts/api/gen/go/auth/v1/authv1connect"
-	"github.com/tech-inspire/service/auth-service/internal/api/jwt"
+	"github.com/tech-inspire/service/auth-service/pkg/jwt"
 )
 
-func AuthMiddleware(m *jwt.Manager) func(_ context.Context, req *http.Request) (any, error) {
-	return func(_ context.Context, req *http.Request) (any, error) {
-		allowList := map[string]struct{}{
-			authv1connect.AuthServiceLoginProcedure:        {},
-			authv1connect.AuthServiceRegisterProcedure:     {},
-			authv1connect.AuthServiceConfirmEmailProcedure: {},
-		}
+func New(m *jwt.Validator, noAuthenticationProcedures []string) func(_ context.Context, req *http.Request) (any, error) {
+	noAuthenticationList := make(map[string]struct{}, len(noAuthenticationProcedures))
+	for _, procedure := range noAuthenticationProcedures {
+		noAuthenticationList[procedure] = struct{}{}
+	}
 
+	return func(_ context.Context, req *http.Request) (any, error) {
 		// Infer the procedure from the request URL.
 		procedure, _ := authn.InferProcedure(req.URL)
 
-		if _, ok := allowList[procedure]; ok {
+		if _, ok := noAuthenticationList[procedure]; ok {
 			return nil, nil // no authentication required
 		}
 

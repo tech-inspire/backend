@@ -5,13 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"connectrpc.com/authn"
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	v1 "github.com/tech-inspire/api-contracts/api/gen/go/auth/v1"
-	"github.com/tech-inspire/service/auth-service/internal/api/jwt"
-	"github.com/tech-inspire/service/auth-service/internal/api/rpc/middleware"
 	"github.com/tech-inspire/service/auth-service/internal/service/dto"
+	authmiddleware "github.com/tech-inspire/service/auth-service/pkg/jwt/middleware"
 )
 
 type UserHandler struct {
@@ -24,7 +22,7 @@ func NewUserHandler(avatarService AvatarService, userService UserService) *UserH
 }
 
 func (a UserHandler) GetMe(ctx context.Context, c *connect.Request[v1.GetMeRequest]) (*connect.Response[v1.GetUserResponse], error) {
-	userID := middleware.GetUserInfo(ctx).UserID
+	userID := authmiddleware.GetUserInfo(ctx).UserID
 
 	user, err := a.userService.GetCurrentUserByID(ctx, userID)
 	if err != nil {
@@ -58,7 +56,7 @@ func (a UserHandler) GetUser(ctx context.Context, c *connect.Request[v1.GetUserR
 }
 
 func (a UserHandler) UploadAvatar(ctx context.Context, c *connect.Request[v1.UploadUserAvatarRequest]) (*connect.Response[v1.UploadUserAvatarResponse], error) {
-	token := authn.GetInfo(ctx).(*jwt.ValidateUserAccessTokenOutput)
+	token := authmiddleware.GetUserInfo(ctx)
 
 	contentType := http.DetectContentType(c.Msg.Content)
 

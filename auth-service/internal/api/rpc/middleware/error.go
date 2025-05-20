@@ -65,10 +65,7 @@ func ErrorInterceptor(l *logger.Logger, serviceName string) connect.UnaryInterce
 					code = connect.CodeAborted
 				}
 
-				connectErr := connect.NewError(
-					code,
-					err,
-				)
+				connectErr = connect.NewError(code, err)
 				if detail, detailErr := connect.NewErrorDetail(info); detailErr == nil {
 					connectErr.AddDetail(detail)
 				}
@@ -94,12 +91,10 @@ func ErrorInterceptor(l *logger.Logger, serviceName string) connect.UnaryInterce
 
 			l.Error(err.Error(), fields...)
 
-			connectErr = connect.NewError(
+			return nil, connect.NewError(
 				connect.CodeInternal,
 				errors.New("internal error, try again later"),
 			)
-
-			return nil, connectErr
 		}
 	}
 

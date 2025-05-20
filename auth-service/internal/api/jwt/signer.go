@@ -2,7 +2,6 @@ package jwt
 
 import (
 	"context"
-	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -11,36 +10,23 @@ import (
 	"github.com/MicahParks/jwkset"
 	"github.com/MicahParks/keyfunc/v3"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 	"github.com/tech-inspire/service/auth-service/internal/config"
-	"github.com/tech-inspire/service/auth-service/internal/models"
+	authjwt "github.com/tech-inspire/service/auth-service/pkg/jwt"
 	"golang.org/x/crypto/ed25519"
 )
 
-type Manager struct {
+type Signer struct {
 	privateKey ed25519.PrivateKey
 	jwtKID     string
-	keyFunc    jwt.Keyfunc
 	jwks       jwkset.Storage
 
 	accessTokenDuration  time.Duration
 	refreshTokenDuration time.Duration
 }
 
-func mustGenerateKIDFromPublicKey(publicKey ed25519.PublicKey) string {
-	hash := sha256.New()
-	_, err := hash.Write(publicKey)
-	if err != nil {
-		panic(err)
-	}
-
-	kid := uuid.UUID(hash.Sum(nil)[:16]).String()
-	return kid
-}
-
-func NewManager(
+func NewSigner(
 	cfg *config.Config,
-) (*Manager, error) {
+) (*Signer, error) {
 	data, err := os.ReadFile(cfg.JWT.UserJWKPath)
 	if err != nil {
 		return nil, fmt.Errorf("read JWT key: %w", err)
@@ -53,7 +39,7 @@ func NewManager(
 
 	privateKey := key.(ed25519.PrivateKey)
 	publicKey := privateKey.Public().(ed25519.PublicKey)
-	kid := mustGenerateKIDFromPublicKey(publicKey)
+	kid := mustGenerateKID(publicKey)
 
 	options := jwkset.JWKOptions{
 		Metadata: jwkset.JWKMetadataOptions{
@@ -72,17 +58,9 @@ func NewManager(
 		return nil, fmt.Errorf("add key to storage: %w", err)
 	}
 
-	kf, err := keyfunc.New(keyfunc.Options{
-		Storage: storage,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("create keyfunc: %w", err)
-	}
-
-	return &Manager{
+	return &Signer{
 		privateKey: privateKey,
 		jwtKID:     kid,
-		keyFunc:    kf.Keyfunc,
 		jwks:       storage,
 
 		accessTokenDuration:  cfg.JWT.AccessTokenDuration,
@@ -90,32 +68,17 @@ func NewManager(
 	}, nil
 }
 
-type BuildOutput struct {
-	AccessToken           string
-	AccessTokenExpiresAt  time.Time
-	RefreshToken          string
-	RefreshTokenExpiresAt time.Time
-}
-
-func (j Manager) BuildTokens(user models.User, sessionID uuid.UUID, sessionToken string) (*BuildOutput, error) {
-	accessToken, accessExpiresAt, err := j.BuildUserAccessToken(user, sessionID)
+func (j Signer) Validator() (*authjwt.Validator, error) {
+	kf, err := keyfunc.New(keyfunc.Options{
+		Storage: j.jwks,
+	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create keyfunc: %w", err)
 	}
 
-	refreshToken, refreshExpiresAt, err := j.BuildUserRefreshToken(user.ID, sessionID, sessionToken)
-	if err != nil {
-		return nil, err
-	}
-
-	return &BuildOutput{
-		AccessToken:           accessToken,
-		AccessTokenExpiresAt:  accessExpiresAt,
-		RefreshToken:          refreshToken,
-		RefreshTokenExpiresAt: refreshExpiresAt,
-	}, nil
+	return authjwt.NewValidatorFromKeyFunc(kf.Keyfunc), nil
 }
 
-func (j Manager) PublicUsersJWKS() (json.RawMessage, error) {
+func (j Signer) PublicUsersJWKS() (json.RawMessage, error) {
 	return j.jwks.JSONPublic(context.TODO())
 }

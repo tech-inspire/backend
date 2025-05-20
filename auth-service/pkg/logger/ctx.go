@@ -2,8 +2,6 @@ package logger
 
 import (
 	"context"
-
-	"go.uber.org/zap"
 )
 
 type loggerCtxKey struct{}
@@ -17,9 +15,9 @@ func (l *Logger) Ctx(ctx context.Context) *Logger {
 	return l
 }
 
-func (l *Logger) With(fields ...zap.Field) *Logger {
+func (l *Logger) With(fields ...any) *Logger {
 	return &Logger{
-		Logger:      l.Logger.With(),
+		Logger:      l.Logger.With(fields),
 		Environment: l.Environment,
 	}
 }

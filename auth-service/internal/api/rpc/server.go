@@ -22,6 +22,8 @@ import (
 	"github.com/tech-inspire/service/auth-service/internal/api/rpc/handlers"
 	"github.com/tech-inspire/service/auth-service/internal/api/rpc/middleware"
 	"github.com/tech-inspire/service/auth-service/internal/config"
+	authjwt "github.com/tech-inspire/service/auth-service/pkg/jwt"
+	authmiddleware "github.com/tech-inspire/service/auth-service/pkg/jwt/middleware"
 	"github.com/tech-inspire/service/auth-service/pkg/logger"
 	"go.uber.org/fx"
 	"golang.org/x/net/http2"
@@ -43,7 +45,8 @@ type Params struct {
 
 	Logger *logger.Logger
 
-	JwtManager *jwt.Manager
+	JwtSigner    *jwt.Signer
+	JwtValidator *authjwt.Validator
 
 	AuthHandler *handlers.AuthHandler
 	UserHandler *handlers.UserHandler
@@ -55,13 +58,13 @@ func RegisterRoutes(params Params, r *chi.Mux) error {
 		return fmt.Errorf("protovalidate: create interceptor: %w", err)
 	}
 
-	type service struct {
+	type authService struct {
 		*handlers.AuthHandler
 		*handlers.UserHandler
 	}
 
 	authServicePath, authServiceHandler := authv1connect.NewAuthServiceHandler(
-		service{
+		authService{
 			params.AuthHandler, params.UserHandler,
 		},
 		connect.WithInterceptors(
@@ -70,8 +73,15 @@ func RegisterRoutes(params Params, r *chi.Mux) error {
 		),
 	)
 
+	// without auth
+	noAuthenticationProcedures := []string{
+		authv1connect.AuthServiceLoginProcedure,
+		authv1connect.AuthServiceRegisterProcedure,
+		authv1connect.AuthServiceConfirmEmailProcedure,
+	}
+
 	authMiddleware := authn.NewMiddleware(
-		middleware.AuthMiddleware(params.JwtManager),
+		authmiddleware.New(params.JwtValidator, noAuthenticationProcedures),
 	)
 
 	reflector := grpcreflect.NewStaticReflector(authv1connect.AuthServiceName)
@@ -81,7 +91,7 @@ func RegisterRoutes(params Params, r *chi.Mux) error {
 	r.Mount(authServicePath, authMiddleware.Wrap(authServiceHandler))
 
 	r.HandleFunc("/auth/.well-known/jwks.json", func(writer http.ResponseWriter, request *http.Request) {
-		data, err := params.JwtManager.PublicUsersJWKS()
+		data, err := params.JwtSigner.PublicUsersJWKS()
 		if err != nil {
 			slog.Error("get public users jwks", logger.Error(err))
 			writer.WriteHeader(http.StatusInternalServerError)
@@ -113,7 +123,9 @@ func NewServer(lc fx.Lifecycle, cfg *config.Config) (*chi.Mux, error) {
 			if err != nil {
 				return err
 			}
-			fmt.Println("Starting HTTP server at", cfg.Server.Address)
+
+			slog.Info("server started", slog.String("listening", cfg.Server.Address))
+
 			go func() {
 				if err := srv.Serve(ln); err != nil {
 					log.Fatal(err)

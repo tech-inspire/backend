@@ -15,7 +15,7 @@ type ValidateUserAccessTokenOutput struct {
 	IsAdmin bool
 }
 
-func (j Manager) ValidateUserAccessToken(accessToken string) (*ValidateUserAccessTokenOutput, error) {
+func (j Validator) ValidateUserAccessToken(accessToken string) (*ValidateUserAccessTokenOutput, error) {
 	token, err := jwt.ParseWithClaims(accessToken, new(UserAccessTokenClaims), j.keyFunc)
 	if err != nil {
 		return nil, errors.Errorf("jwt: parse token: %w", err)
@@ -41,14 +41,14 @@ func (j Manager) ValidateUserAccessToken(accessToken string) (*ValidateUserAcces
 	}, nil
 }
 
-type ValidateAdminRefreshTokenOutput struct {
+type ValidateRefreshTokenOutput struct {
 	UserID       uuid.UUID
 	SessionID    uuid.UUID
 	SessionToken string
 	ExpiresAt    time.Time
 }
 
-func (j Manager) ValidateUserRefreshToken(refreshToken string) (*ValidateAdminRefreshTokenOutput, error) {
+func (j Validator) ValidateUserRefreshToken(refreshToken string) (*ValidateRefreshTokenOutput, error) {
 	token, err := jwt.ParseWithClaims(refreshToken, new(UserRefreshTokenClaims), j.keyFunc)
 	if err != nil {
 		return nil, errors.Errorf("jwt: parse token: %w", err)
@@ -67,7 +67,7 @@ func (j Manager) ValidateUserRefreshToken(refreshToken string) (*ValidateAdminRe
 		return nil, errors.Errorf("jwt: parse 'sub' into uuid: %w", err)
 	}
 
-	return &ValidateAdminRefreshTokenOutput{
+	return &ValidateRefreshTokenOutput{
 		UserID:       userID,
 		SessionID:    claims.SessionID,
 		SessionToken: claims.SessionToken,

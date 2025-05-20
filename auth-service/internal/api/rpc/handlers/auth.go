@@ -11,6 +11,7 @@ import (
 	"github.com/tech-inspire/service/auth-service/internal/apperrors"
 	"github.com/tech-inspire/service/auth-service/internal/models"
 	"github.com/tech-inspire/service/auth-service/internal/service/dto"
+	authjwt "github.com/tech-inspire/service/auth-service/pkg/jwt"
 	"github.com/tech-inspire/service/auth-service/pkg/mail"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -19,14 +20,29 @@ type AuthHandler struct {
 	authService   AuthService
 	userService   UserService
 	avatarService AvatarService
-	jwtManager    *jwt.Manager
+
+	jwtValidator *authjwt.Validator
+	jwtSigner    *jwt.Signer
 }
 
-func NewAuthHandler(authService AuthService, userService UserService, avatarService AvatarService, jwtManager *jwt.Manager) *AuthHandler {
-	return &AuthHandler{authService: authService, userService: userService, avatarService: avatarService, jwtManager: jwtManager}
+func NewAuthHandler(
+	authService AuthService,
+	userService UserService,
+	avatarService AvatarService,
+
+	jwtValidator *authjwt.Validator,
+	jwtSigner *jwt.Signer,
+) *AuthHandler {
+	return &AuthHandler{
+		authService:   authService,
+		userService:   userService,
+		avatarService: avatarService,
+		jwtValidator:  jwtValidator,
+		jwtSigner:     jwtSigner,
+	}
 }
 
-func (AuthHandler) loginResponse(tokens *jwt.BuildOutput, u models.User) *v1.SuccessLoginResponse {
+func (AuthHandler) loginResponse(tokens *jwt.SignOutput, u models.User) *v1.SuccessLoginResponse {
 	return &v1.SuccessLoginResponse{
 		AccessToken:           tokens.AccessToken,
 		AccessTokenExpiresAt:  timestamppb.New(tokens.AccessTokenExpiresAt),
@@ -57,7 +73,7 @@ func (a AuthHandler) Login(ctx context.Context, c *connect.Request[v1.LoginReque
 		return nil, err
 	}
 
-	tokens, err := a.jwtManager.BuildTokens(*out.User, out.Session.ID, out.Session.Token)
+	tokens, err := a.jwtSigner.SignTokens(*out.User, out.Session.ID, out.Session.Token)
 	if err != nil {
 		return nil, errors.Errorf("jwt: build tokens: %w", err)
 	}
@@ -85,7 +101,7 @@ func (a AuthHandler) Register(ctx context.Context, c *connect.Request[v1.Registe
 	if out.LoginOutput != nil {
 		loginOutput := out.LoginOutput
 
-		tokens, err := a.jwtManager.BuildTokens(*loginOutput.User, loginOutput.Session.ID, loginOutput.Session.Token)
+		tokens, err := a.jwtSigner.SignTokens(*loginOutput.User, loginOutput.Session.ID, loginOutput.Session.Token)
 		if err != nil {
 			return nil, errors.Errorf("jwt: build tokens: %w", err)
 		}
@@ -109,7 +125,7 @@ func (a AuthHandler) Register(ctx context.Context, c *connect.Request[v1.Registe
 }
 
 func (a AuthHandler) RefreshToken(ctx context.Context, c *connect.Request[v1.RefreshTokenRequest]) (*connect.Response[v1.SuccessLoginResponse], error) {
-	tokenInfo, err := a.jwtManager.ValidateUserRefreshToken(c.Msg.RefreshToken)
+	tokenInfo, err := a.jwtValidator.ValidateUserRefreshToken(c.Msg.RefreshToken)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", apperrors.ErrUnauthorized, err)
 	}
@@ -121,7 +137,7 @@ func (a AuthHandler) RefreshToken(ctx context.Context, c *connect.Request[v1.Ref
 		return nil, errors.Errorf("auth service: get session: %w", err)
 	}
 
-	tokens, err := a.jwtManager.BuildTokens(*user, tokenInfo.SessionID, tokenInfo.SessionToken)
+	tokens, err := a.jwtSigner.SignTokens(*user, tokenInfo.SessionID, tokenInfo.SessionToken)
 	if err != nil {
 		return nil, errors.Errorf("jwt: build tokens: %w", err)
 	}
@@ -130,7 +146,7 @@ func (a AuthHandler) RefreshToken(ctx context.Context, c *connect.Request[v1.Ref
 }
 
 func (a AuthHandler) Logout(ctx context.Context, c *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error) {
-	tokenInfo, err := a.jwtManager.ValidateUserRefreshToken(c.Msg.RefreshToken)
+	tokenInfo, err := a.jwtValidator.ValidateUserRefreshToken(c.Msg.RefreshToken)
 	if err != nil {
 		return nil, fmt.Errorf("%w: %s", apperrors.ErrUnauthorized, err)
 	}
@@ -149,7 +165,7 @@ func (a AuthHandler) ConfirmEmail(ctx context.Context, c *connect.Request[v1.Con
 		return nil, fmt.Errorf("confirm email: %w", err)
 	}
 
-	tokens, err := a.jwtManager.BuildTokens(*out.User, out.Session.ID, out.Session.Token)
+	tokens, err := a.jwtSigner.SignTokens(*out.User, out.Session.ID, out.Session.Token)
 	if err != nil {
 		return nil, errors.Errorf("jwt: build tokens: %w", err)
 	}

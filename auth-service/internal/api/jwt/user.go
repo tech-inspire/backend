@@ -7,44 +7,24 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/tech-inspire/service/auth-service/internal/models"
+	authjwt "github.com/tech-inspire/service/auth-service/pkg/jwt"
 )
 
-type TokenUse string
-
-const (
-	AccessToken  TokenUse = "access"
-	RefreshToken TokenUse = "refresh"
-)
-
-type UserAccessTokenClaims struct {
-	jwt.RegisteredClaims
-	TokenUse TokenUse `json:"token_use"`
-
-	IsAdmin bool `json:"is_admin,omitempty"`
-
-	SessionID uuid.UUID `json:"session_id"`
-}
-
-const (
-	Issuer   = "inspire-auth"
-	Audience = "inspire-web"
-)
-
-func (j Manager) BuildUserAccessToken(user models.User, sessionID uuid.UUID) (token string, expiresAt time.Time, err error) {
+func (j Signer) BuildUserAccessToken(user models.User, sessionID uuid.UUID) (token string, expiresAt time.Time, err error) {
 	var (
 		now             = time.Now()
 		accessExpiresAt = now.Add(j.accessTokenDuration)
 	)
 
-	accessToken := jwt.NewWithClaims(new(jwt.SigningMethodEd25519), UserAccessTokenClaims{
+	accessToken := jwt.NewWithClaims(new(jwt.SigningMethodEd25519), authjwt.UserAccessTokenClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    Issuer,
+			Issuer:    authjwt.Issuer,
 			Subject:   user.ID.String(),
-			Audience:  []string{Audience},
+			Audience:  []string{authjwt.Audience},
 			ExpiresAt: jwt.NewNumericDate(accessExpiresAt),
 			IssuedAt:  jwt.NewNumericDate(now),
 		},
-		TokenUse:  AccessToken,
+		TokenUse:  authjwt.AccessToken,
 		SessionID: sessionID,
 		IsAdmin:   user.IsAdmin,
 	})
@@ -53,35 +33,27 @@ func (j Manager) BuildUserAccessToken(user models.User, sessionID uuid.UUID) (to
 
 	signedAccessToken, err := accessToken.SignedString(j.privateKey)
 	if err != nil {
-		return "", accessExpiresAt, errors.Errorf("failed to sign access token: %w", err)
+		return "", accessExpiresAt, errors.Errorf("sign access token: %w", err)
 	}
 
 	return signedAccessToken, accessExpiresAt, nil
 }
 
-type UserRefreshTokenClaims struct {
-	jwt.RegisteredClaims
-	TokenUse TokenUse `json:"token_use"`
-
-	SessionID    uuid.UUID `json:"session_id"`
-	SessionToken string    `json:"session_token"`
-}
-
-func (j Manager) BuildUserRefreshToken(userID, sessionID uuid.UUID, sessionToken string) (token string, expiresAt time.Time, err error) {
+func (j Signer) BuildUserRefreshToken(userID, sessionID uuid.UUID, sessionToken string) (token string, expiresAt time.Time, err error) {
 	var (
 		now              = time.Now()
 		refreshExpiresAt = now.Add(j.refreshTokenDuration)
 	)
 
-	refreshToken := jwt.NewWithClaims(new(jwt.SigningMethodEd25519), UserRefreshTokenClaims{
+	refreshToken := jwt.NewWithClaims(new(jwt.SigningMethodEd25519), authjwt.UserRefreshTokenClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    Issuer,
+			Issuer:    authjwt.Issuer,
 			Subject:   userID.String(),
-			Audience:  []string{Audience},
+			Audience:  []string{authjwt.Audience},
 			ExpiresAt: jwt.NewNumericDate(refreshExpiresAt),
 			IssuedAt:  jwt.NewNumericDate(now),
 		},
-		TokenUse:     RefreshToken,
+		TokenUse:     authjwt.RefreshToken,
 		SessionID:    sessionID,
 		SessionToken: sessionToken,
 	})
