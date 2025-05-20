@@ -3,7 +3,7 @@ import threading
 
 from app.grpc import embedding
 from app.services import clip_embedder
-from app.workers.embedding_consumer import start_worker
+from app.worker.worker import start_worker
 
 
 def run_worker_loop():

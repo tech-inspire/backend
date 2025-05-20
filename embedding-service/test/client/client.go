@@ -1,4 +1,3 @@
-// go run publish.go
 package main
 
 import (
