@@ -1,0 +1,36 @@
+version: '3'
+
+
+tasks:
+  # bootstrap a virtualenv and install your tools
+  setup:
+    desc: Install project dependencies and dev tools
+    cmds:
+      - pip install black isort flake8 pylint
+
+  # run Black and isort
+  format:
+    desc: Apply code formatting
+    cmds:
+      - black .
+      - isort .
+
+  # run Flake8 and Pylint
+  lint:
+    desc: Run static checks
+    cmds:
+      - flake8
+
+  # combine format + lint
+  check:
+    desc: Format + Lint
+    deps:
+      - format
+      - lint
+
+  # default when you just run `task`
+  default:
+    desc: Setup (if needed) then run all checks
+    deps:
+      - setup
+      - check

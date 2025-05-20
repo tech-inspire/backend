@@ -1,38 +1,49 @@
-import asyncio, io, os, msgpack, aiohttp, nats
-import datetime
-from typing import Optional
+import asyncio
+import io
+import os
 import traceback
-from google.protobuf.timestamp_pb2 import Timestamp
 from datetime import datetime, timezone
-from embeddings.v1 import events_pb2
-from nats.js.api import StreamConfig, RetentionPolicy, StorageType
-from PIL import Image
-from app.services.clip_embedder import embed_image, embed_text
+from typing import Optional
 
-NATS_URL   = os.getenv("NATS_URL", "nats://localhost:4222")
-STREAM     = "POSTS"
-PULL_SUBJ  = "posts.*.generate_embeddings"
-PUSH_SUBJ  = "posts.{post_id}.embeddings_updated"
-DURABLE    = os.getenv("WORKER_DURABLE", "embedding_worker")
+import aiohttp
+import nats
+from embeddings.v1 import events_pb2
+from google.protobuf.timestamp_pb2 import Timestamp
+from nats.js.api import RetentionPolicy, StorageType, StreamConfig
+from PIL import Image
+
+from app.services.clip_embedder import embed_image
+
+NATS_URL = os.getenv("NATS_URL", "nats://localhost:4222")
+
+STREAM = "POSTS"
+PULL_SUBJ = "posts.*.generate_embeddings"
+PUSH_SUBJ = "posts.*.embeddings_updated"
+PUSH_SUBJ_TEMPLATE = "posts.{post_id}.embeddings_updated"
+
+DURABLE = os.getenv("WORKER_DURABLE", "embedding_worker")
 CONCURRENCY = int(os.getenv("WORKER_CONCURRENCY", "4"))
 
 _http_session: Optional[aiohttp.ClientSession] = None
+
 
 async def _ensure_stream(js):
     if STREAM not in (await js.streams_info()):
         cfg = StreamConfig(
             name=STREAM,
-            subjects=[PULL_SUBJ, "posts.*.embeddings_updated"],
+            subjects=[PULL_SUBJ, PUSH_SUBJ],
             retention=RetentionPolicy.LIMITS,
             storage=StorageType.FILE,
         )
         await js.add_stream(cfg)
+
 
 async def _get_http():
     global _http_session
     if _http_session is None:
         _http_session = aiohttp.ClientSession()
     return _http_session
+
 
 async def _download_image(url: str) -> Image.Image:
     session = await _get_http()
@@ -41,18 +52,17 @@ async def _download_image(url: str) -> Image.Image:
         data = await resp.read()
     return Image.open(io.BytesIO(data)).convert("RGB")
 
+
 async def _process_msg(js, msg):
     try:
         request = events_pb2.GeneratePostEmbeddingsEvent()
         request.ParseFromString(msg.data)
-        print(request)
 
-        post_id      = request.post_id
-        image_url    = request.image_url
+        post_id = request.post_id
+        image_url = request.image_url
 
         img = await _download_image(image_url)
-        img_vec  = embed_image(img).tolist()
-        # desc_vec = embed_text(description).tolist()
+        img_vec = embed_image(img).tolist()
 
         now = datetime.now(timezone.utc)
         ts = Timestamp()
@@ -65,18 +75,19 @@ async def _process_msg(js, msg):
         )
         event_bytes = event.SerializeToString()
         await js.publish(
-            subject=PUSH_SUBJ.format(post_id=post_id),
+            subject=PUSH_SUBJ_TEMPLATE.format(post_id=post_id),
             payload=event_bytes,
         )
         await msg.ack()
-        print(f"✔ processed post {post_id}")
+        print(f"Processed post {post_id}")
 
     except Exception as exc:
-        print("✖ error:", exc)
+        print("Error processing message:", exc)
         traceback.print_exc()
         await msg.nak()
 
-async def main():
+
+async def start_worker():
     nc = await nats.connect(servers=[NATS_URL])
     js = nc.jetstream()
     await _ensure_stream(js)
@@ -99,10 +110,5 @@ async def main():
                 await _process_msg(js, msgs[0])
 
     # spawn concurrency workers
+    print("Worker started")
     await asyncio.gather(*(worker_loop() for _ in range(CONCURRENCY)))
-
-if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
