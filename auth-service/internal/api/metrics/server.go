@@ -6,12 +6,9 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/IBM/pgxpoolprometheus"
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/gofiber/fiber/v3"
-	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	metrics "github.com/slok/go-http-metrics/metrics/prometheus"
 	"github.com/slok/go-http-metrics/middleware"
@@ -29,23 +26,11 @@ func RecordMiddleware(next http.Handler) http.Handler {
 	return middlewarestd.Handler("", m, next)
 }
 
-func registerMetrics(r chi.Router, pool *pgxpool.Pool) {
-	prometheus.MustRegister(
-		pgxpoolprometheus.NewCollector(pool, map[string]string{
-			"database_name": pool.Config().ConnConfig.Database,
-		}),
-	)
-
-	r.Handle("/metrics", promhttp.Handler())
-}
-
 type Params struct {
 	fx.In
 
 	Config *config.Config
 	Logger *logger.Logger
-
-	DatabasePool *pgxpool.Pool
 }
 type Result struct {
 	fx.Out
@@ -54,9 +39,9 @@ type Result struct {
 
 func NewServer(lc fx.Lifecycle, in Params) error {
 	r := chi.NewRouter()
-	r.Mount("/debug", chimiddleware.Profiler())
 
-	registerMetrics(r, in.DatabasePool)
+	r.Mount("/debug", chimiddleware.Profiler())
+	r.Handle("/metrics", promhttp.Handler())
 
 	srv := &http.Server{
 		Handler: r,

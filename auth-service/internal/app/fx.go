@@ -20,6 +20,7 @@ import (
 	"github.com/tech-inspire/service/auth-service/internal/service"
 	"github.com/tech-inspire/service/auth-service/pkg/clients"
 	"github.com/tech-inspire/service/auth-service/pkg/generator"
+	authjwt "github.com/tech-inspire/service/auth-service/pkg/jwt"
 	"github.com/tech-inspire/service/auth-service/pkg/logger"
 	"github.com/tech-inspire/service/auth-service/pkg/mail"
 	"go.uber.org/fx"
@@ -81,11 +82,17 @@ func Run() {
 		//
 
 		fx.Provide(jwt.NewSigner),
+		fx.Provide(func(signer *jwt.Signer) (*authjwt.Validator, error) {
+			return signer.Validator()
+		}),
+
 		fx.Provide(
 			fx.Annotate(generator.New, fx.As(new(service.Generator))),
 		),
 
 		fx.Invoke(metrics.NewServer),
+		fx.Invoke(metrics.RegisterCollectors),
+
 		fx.Provide(rpc.NewServer),
 		fx.Invoke(rpc.RegisterRoutes),
 	}
