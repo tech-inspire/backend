@@ -6,8 +6,8 @@ http:
       entryPoints:
         - web
     posts-router:
-      rule: "PathPrefix(`/posts.v1.PostService/`)"
-      service: auth-service
+      rule: "PathPrefix(`/posts.v1.PostsService/`)"
+      service: posts-service
       entryPoints:
         - web
   services:
@@ -18,3 +18,10 @@ http:
           - url: "h2c://auth-service-1:5080"
           - url: "h2c://auth-service-2:5080"
           - url: "h2c://auth-service-3:5080"
+    posts-service:
+      loadBalancer:
+        servers:
+          # h2c = HTTP/2 without TLS
+          - url: "h2c://posts-service-1:6080"
+          - url: "h2c://posts-service-2:6080"
+          - url: "h2c://posts-service-3:6080"

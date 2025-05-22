@@ -50,12 +50,12 @@ services:
         condition: service_healthy
     <<: *posts-service-template
     ports:
-      - '6070:6070'
-      - '6072:6072'
+      - '6070:6080'
+      - '6072:6082'
     environment:
       <<: *posts-service-env
-      SERVER_ADDRESS: 0.0.0.0:6070
-      SERVER_METRICS_ADDRESS: 0.0.0.0:6072
+      SERVER_ADDRESS: 0.0.0.0:6080
+      SERVER_METRICS_ADDRESS: 0.0.0.0:6082
       APPLY_MIGRATIONS: true
 
   posts-service-2:
@@ -77,12 +77,12 @@ services:
         condition: service_healthy
     <<: *posts-service-template
     ports:
-      - '6090:6090'
-      - '6092:6092'
+      - '6090:6080'
+      - '6092:6082'
     environment:
       <<: *posts-service-env
-      SERVER_ADDRESS: 0.0.0.0:6090
-      SERVER_METRICS_ADDRESS: 0.0.0.0:6092
+      SERVER_ADDRESS: 0.0.0.0:6080
+      SERVER_METRICS_ADDRESS: 0.0.0.0:6082
 
 volumes:
   pg_data:
