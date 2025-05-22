@@ -8,8 +8,8 @@ import (
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
 	v1 "github.com/tech-inspire/api-contracts/api/gen/go/auth/v1"
-	"github.com/tech-inspire/service/auth-service/internal/service/dto"
-	authmiddleware "github.com/tech-inspire/service/auth-service/pkg/jwt/middleware"
+	"github.com/tech-inspire/backend/auth-service/internal/service/dto"
+	authmiddleware "github.com/tech-inspire/backend/auth-service/pkg/jwt/middleware"
 )
 
 type UserHandler struct {

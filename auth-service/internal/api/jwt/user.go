@@ -6,8 +6,8 @@ import (
 	"github.com/go-errors/errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/tech-inspire/service/auth-service/internal/models"
-	authjwt "github.com/tech-inspire/service/auth-service/pkg/jwt"
+	"github.com/tech-inspire/backend/auth-service/internal/models"
+	authjwt "github.com/tech-inspire/backend/auth-service/pkg/jwt"
 )
 
 func (j Signer) BuildUserAccessToken(user models.User, sessionID uuid.UUID) (token string, expiresAt time.Time, err error) {

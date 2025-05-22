@@ -10,10 +10,10 @@ import (
 	"github.com/huandu/go-sqlbuilder"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/tech-inspire/service/auth-service/internal/apperrors"
-	"github.com/tech-inspire/service/auth-service/internal/models"
-	"github.com/tech-inspire/service/auth-service/internal/repository/postgres/sqlc"
-	"github.com/tech-inspire/service/auth-service/internal/service/dto"
+	"github.com/tech-inspire/backend/auth-service/internal/apperrors"
+	"github.com/tech-inspire/backend/auth-service/internal/models"
+	"github.com/tech-inspire/backend/auth-service/internal/repository/postgres/sqlc"
+	"github.com/tech-inspire/backend/auth-service/internal/service/dto"
 )
 
 type UserRepository struct {

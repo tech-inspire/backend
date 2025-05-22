@@ -1,0 +1,54 @@
+include:
+  - scylladb-compose-include.yaml
+
+services:
+#  postgres:
+#    image: postgres:17.2
+#    environment:
+#      POSTGRES_USER: auth_test_user
+#      POSTGRES_PASSWORD: auth_test_pass
+#    healthcheck:
+#      test: [ "CMD-SHELL", "pg_isready" ]
+#      interval: 1s
+#      timeout: 5s
+#      retries: 10
+#    ports:
+#      - '6063:5432'
+#    volumes:
+#      - pg_data:/var/lib/postgresql/data
+
+  posts-redis:
+    image: redis:7.4.0
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "redis_pass", "ping" ]
+      interval: 1s
+    ports:
+      - '6064:6379'
+    command: redis-server --requirepass auth_redis_pass
+    volumes:
+      - redis_data:/data
+
+  posts-service:
+    env_file:
+      - .env
+    build: . # use Dockerfile in the root of the repository
+    depends_on:
+      posts-redis:
+        condition: service_healthy
+    ports:
+      - '6080:5080'
+      - '6082:5082'
+    environment:
+      POSTGRES_DSN: postgres://auth_test_user:auth_test_pass@postgres:5432/postgres?sslmode=disable
+      REDIS_DSN: redis://:auth_redis_pass@redis:6379
+
+      SERVER_ADDRESS: 0.0.0.0:5080
+    volumes:
+      - ./keys:/keys
+      - ./data:/data
+
+
+volumes:
+  pg_data:
+  redis_data:

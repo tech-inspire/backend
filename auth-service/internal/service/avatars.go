@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-errors/errors"
 	"github.com/google/uuid"
-	"github.com/tech-inspire/service/auth-service/internal/service/dto"
+	"github.com/tech-inspire/backend/auth-service/internal/service/dto"
 )
 
 type AvatarService struct {

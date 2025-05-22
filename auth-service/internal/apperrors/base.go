@@ -3,7 +3,7 @@ package apperrors
 import (
 	"errors"
 
-	"github.com/tech-inspire/service/auth-service/internal/apperrors/codes"
+	"github.com/tech-inspire/backend/auth-service/internal/apperrors/codes"
 )
 
 var _ error = &Error{}

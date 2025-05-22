@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/tech-inspire/service/auth-service/internal/apperrors"
-	"github.com/tech-inspire/service/auth-service/internal/models"
+	"github.com/tech-inspire/backend/auth-service/internal/apperrors"
+	"github.com/tech-inspire/backend/auth-service/internal/models"
 )
 
 type ResetPasswordCodesRepository struct {

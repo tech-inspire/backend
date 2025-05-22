@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/smtp"
 
-	"github.com/tech-inspire/service/auth-service/internal/config"
+	"github.com/tech-inspire/backend/auth-service/internal/config"
 )
 
 type Client struct {

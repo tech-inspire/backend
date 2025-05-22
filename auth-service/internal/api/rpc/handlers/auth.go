@@ -7,12 +7,12 @@ import (
 	"connectrpc.com/connect"
 	"github.com/go-errors/errors"
 	v1 "github.com/tech-inspire/api-contracts/api/gen/go/auth/v1"
-	"github.com/tech-inspire/service/auth-service/internal/api/jwt"
-	"github.com/tech-inspire/service/auth-service/internal/apperrors"
-	"github.com/tech-inspire/service/auth-service/internal/models"
-	"github.com/tech-inspire/service/auth-service/internal/service/dto"
-	authjwt "github.com/tech-inspire/service/auth-service/pkg/jwt"
-	"github.com/tech-inspire/service/auth-service/pkg/mail"
+	"github.com/tech-inspire/backend/auth-service/internal/api/jwt"
+	"github.com/tech-inspire/backend/auth-service/internal/apperrors"
+	"github.com/tech-inspire/backend/auth-service/internal/clients/mail"
+	"github.com/tech-inspire/backend/auth-service/internal/models"
+	"github.com/tech-inspire/backend/auth-service/internal/service/dto"
+	authjwt "github.com/tech-inspire/backend/auth-service/pkg/jwt"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

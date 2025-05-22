@@ -7,7 +7,7 @@ import (
 	"github.com/go-errors/errors"
 	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
-	"github.com/tech-inspire/service/auth-service/internal/config"
+	"github.com/tech-inspire/backend/posts-service/internal/config"
 	"go.uber.org/fx"
 )
 

@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/tech-inspire/service/auth-service/internal/models"
+	"github.com/tech-inspire/backend/auth-service/internal/models"
 )
 
 type SignOutput struct {

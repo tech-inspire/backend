@@ -2,7 +2,7 @@ package avatarstorage
 
 import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/tech-inspire/service/auth-service/internal/config"
+	"github.com/tech-inspire/backend/auth-service/internal/config"
 )
 
 type AvatarStorage struct {

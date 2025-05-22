@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/google/uuid"
-	"github.com/tech-inspire/service/auth-service/internal/service/dto"
+	"github.com/tech-inspire/backend/auth-service/internal/service/dto"
 )
 
 func (AvatarStorage) userAvatarObjectName(userID uuid.UUID) string {

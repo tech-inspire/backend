@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/tech-inspire/service/auth-service/internal/config"
+	"github.com/tech-inspire/backend/auth-service/internal/config"
 	"go.uber.org/fx"
 )
 

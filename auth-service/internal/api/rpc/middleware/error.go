@@ -9,9 +9,9 @@ import (
 	"connectrpc.com/connect"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-errors/errors"
-	"github.com/tech-inspire/service/auth-service/internal/apperrors"
-	"github.com/tech-inspire/service/auth-service/internal/apperrors/codes"
-	"github.com/tech-inspire/service/auth-service/pkg/logger"
+	"github.com/tech-inspire/backend/auth-service/internal/apperrors"
+	"github.com/tech-inspire/backend/auth-service/internal/apperrors/codes"
+	"github.com/tech-inspire/backend/auth-service/pkg/logger"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 )
 

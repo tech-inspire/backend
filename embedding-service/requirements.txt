@@ -5,11 +5,11 @@ attrs==25.3.0
 clip-anytorch==2.6.0
 frozenlist==1.6.0
 ftfy==6.3.1
-grpcio==1.71.0
-huggingface-hub==0.31.2
-multidict==6.4.3
+grpcio==1.72.0
+huggingface-hub==0.31.4
+multidict==6.4.4
 nats-py==2.10.0
-numpy==2.2.5
+numpy==2.2.6
 pillow==11.2.1
 protobuf==6.31.0
 sentence-transformers==4.1.0

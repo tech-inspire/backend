@@ -6,7 +6,7 @@ services:
       - "8222:8222"
     command: "--cluster_name NATS -js --http_port 8222 "
 
-  service:
+  embeddings-service:
     build: .
     ports:
       - "8000:8000"     # FastAPI HTTP

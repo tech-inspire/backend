@@ -13,8 +13,8 @@ import (
 	metrics "github.com/slok/go-http-metrics/metrics/prometheus"
 	"github.com/slok/go-http-metrics/middleware"
 	middlewarestd "github.com/slok/go-http-metrics/middleware/std"
-	"github.com/tech-inspire/service/auth-service/internal/config"
-	"github.com/tech-inspire/service/auth-service/pkg/logger"
+	"github.com/tech-inspire/backend/auth-service/internal/config"
+	"github.com/tech-inspire/backend/auth-service/pkg/logger"
 	"go.uber.org/fx"
 )
 

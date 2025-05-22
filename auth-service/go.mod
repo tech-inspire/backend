@@ -1,4 +1,4 @@
-module github.com/tech-inspire/service/auth-service
+module github.com/tech-inspire/backend/auth-service
 
 go 1.24
 

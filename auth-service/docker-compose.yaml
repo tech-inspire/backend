@@ -1,5 +1,5 @@
 services:
-  postgres:
+  auth-postgres:
     image: postgres:17.2
     environment:
       POSTGRES_USER: auth_test_user
@@ -14,7 +14,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
-  redis:
+  auth-redis:
     image: redis:7.4.0
     restart: always
     healthcheck:
@@ -26,14 +26,14 @@ services:
     volumes:
       - redis_data:/data
 
-  service:
+  auth-service:
     env_file:
       - .env
     build: . # use Dockerfile in the root of the repository
     depends_on:
-      postgres:
+      auth-postgres:
         condition: service_healthy
-      redis:
+      auth-redis:
         condition: service_healthy
     ports:
       - '5080:5080'

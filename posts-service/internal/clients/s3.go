@@ -7,7 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/tech-inspire/service/auth-service/internal/config"
+	"github.com/tech-inspire/backend/posts-service/internal/config"
 	"go.uber.org/fx"
 )
 

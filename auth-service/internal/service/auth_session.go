@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-errors/errors"
 	"github.com/google/uuid"
-	"github.com/tech-inspire/service/auth-service/internal/models"
+	"github.com/tech-inspire/backend/auth-service/internal/models"
 )
 
 func (a AuthService) createSession(ctx context.Context, userID, sessionID uuid.UUID) (*models.Session, error) {

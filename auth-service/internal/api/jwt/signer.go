@@ -10,8 +10,8 @@ import (
 	"github.com/MicahParks/jwkset"
 	"github.com/MicahParks/keyfunc/v3"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/tech-inspire/service/auth-service/internal/config"
-	authjwt "github.com/tech-inspire/service/auth-service/pkg/jwt"
+	"github.com/tech-inspire/backend/auth-service/internal/config"
+	authjwt "github.com/tech-inspire/backend/auth-service/pkg/jwt"
 	"golang.org/x/crypto/ed25519"
 )
 

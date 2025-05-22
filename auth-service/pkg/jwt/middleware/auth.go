@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"connectrpc.com/authn"
-	"github.com/tech-inspire/service/auth-service/pkg/jwt"
+	"github.com/tech-inspire/backend/auth-service/pkg/jwt"
 )
 
 func New(m *jwt.Validator, noAuthenticationProcedures []string) func(_ context.Context, req *http.Request) (any, error) {

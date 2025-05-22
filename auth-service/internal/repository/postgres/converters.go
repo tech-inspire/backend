@@ -1,8 +1,8 @@
 package postgres
 
 import (
-	"github.com/tech-inspire/service/auth-service/internal/models"
-	"github.com/tech-inspire/service/auth-service/internal/repository/postgres/sqlc"
+	"github.com/tech-inspire/backend/auth-service/internal/models"
+	"github.com/tech-inspire/backend/auth-service/internal/repository/postgres/sqlc"
 )
 
 func userToModel(user sqlc.User) *models.User {
