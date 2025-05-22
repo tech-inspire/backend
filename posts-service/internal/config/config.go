@@ -12,7 +12,7 @@ type Config struct {
 		Address            string   `env:"SERVER_ADDRESS,required"`
 		MetricsAddress     string   `env:"SERVER_METRICS_ADDRESS,required"`
 		ProxyHeader        string   `env:"SERVER_PROXY_HEADER,required"`
-		CORSAllowedOrigins []string `env:"CORS_ALLOWED_ORIGINS" env-default:"*"`
+		CORSAllowedOrigins []string `env:"CORS_ALLOWED_ORIGINS" envDefault:"*"`
 	}
 
 	S3 struct {
@@ -44,8 +44,8 @@ type Config struct {
 
 	Redis struct {
 		DSN                 string        `env:"REDIS_DSN,required"`
-		PendingImagesSetKey string        `env:"REDIS_PENDING_IMAGES_SET_KEY" env-default:"pending_uploads"`
-		PostsCacheTTL       time.Duration `env:"REDIS_POSTS_CACHE_TTL" env-default:"15m"`
+		PendingImagesSetKey string        `env:"REDIS_PENDING_IMAGES_SET_KEY" envDefault:"pending_uploads"`
+		PostsCacheTTL       time.Duration `env:"REDIS_POSTS_CACHE_TTL" envDefault:"15m"`
 	}
 }
 
