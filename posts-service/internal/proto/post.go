@@ -15,7 +15,7 @@ func Image(variant models.ImageVariant) *postsv1.ImageVariant {
 	case models.Thumbnail:
 		variantType = postsv1.VariantType_THUMBNAIL
 	case models.Original:
-		variantType = postsv1.VariantType_THUMBNAIL
+		variantType = postsv1.VariantType_ORIGINAL
 	default:
 		slog.Error("variant type is not supported", slog.String("variant", string(variant.VariantType)))
 	}
