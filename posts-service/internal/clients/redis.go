@@ -12,7 +12,7 @@ import (
 )
 
 func NewRedis(lc fx.Lifecycle, cfg *config.Config) (*redis.Client, error) {
-	opts, err := redis.ParseURL(cfg.DB.RedisDSN)
+	opts, err := redis.ParseURL(cfg.Redis.DSN)
 	if err != nil {
 		return nil, errors.Errorf("parse redis dsn: %w", err)
 	}

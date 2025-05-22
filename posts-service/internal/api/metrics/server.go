@@ -40,6 +40,9 @@ type Result struct {
 func NewServer(lc fx.Lifecycle, in Params) error {
 	r := chi.NewRouter()
 
+	r.Get("/health", func(writer http.ResponseWriter, request *http.Request) {
+		return
+	})
 	r.Mount("/debug", chimiddleware.Profiler())
 	r.Handle("/metrics", promhttp.Handler())
 

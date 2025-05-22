@@ -312,6 +312,8 @@ github.com/stretchr/testify v1.10.0 h1:Xv5erBjTwe/5IxqUQTdXv5kgmIvbHo3QQyRwhJsOf
 github.com/stretchr/testify v1.10.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
 github.com/tech-inspire/api-contracts v0.1.2 h1:gUaH38aXlv1NxsUfCrLiohPKf9DexnUgjedE5XsRekw=
 github.com/tech-inspire/api-contracts v0.1.2/go.mod h1:BL7xn9tuJZPrQIT3DyB6lXVZk0K4F0LQ0TcgCVmialw=
+github.com/tech-inspire/backend/auth-service/pkg/jwt v0.0.0-20250522113201-934e54ea6881 h1:641ObN8CMuRBmM7A/D9Wb3h0fwVpCP0bF634JpCnvwg=
+github.com/tech-inspire/backend/auth-service/pkg/jwt v0.0.0-20250522113201-934e54ea6881/go.mod h1:CedGjTfZ/UMEzqz+jCofhYTjq0YvaM5kxK3Bj8NpVak=
 github.com/tidwall/pretty v1.0.0/go.mod h1:XNkn88O1ChpSDQmQeStsy+sBenx6DDtFZJxhVysOjyk=
 github.com/tinylib/msgp v1.3.0 h1:ULuf7GPooDaIlbyvgAxBV/FI7ynli6LZ1/nVUNu+0ww=
 github.com/tinylib/msgp v1.3.0/go.mod h1:ykjzy2wzgrlvpDCRc4LA8UXy6D8bzMSuAF3WD57Gok0=

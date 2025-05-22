@@ -17,9 +17,12 @@ WORKDIR /src
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Copy and install Python dependencies
 COPY requirements.txt ./
-RUN pip install --upgrade pip && pip install -r requirements.txt --extra-index-url https://buf.build/gen/python
+
+# cache pip downloads in BuildKit’s layer cache
+RUN --mount=type=cache,id=pip-cache,target=/root/.cache/pip \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt --extra-index-url https://buf.build/gen/python
 
 # Copy application code
 COPY . .

@@ -15,10 +15,10 @@ import (
 	"github.com/tech-inspire/backend/auth-service/internal/clients"
 	"github.com/tech-inspire/backend/auth-service/internal/clients/mail"
 	"github.com/tech-inspire/backend/auth-service/internal/config"
-	avatarstorage "github.com/tech-inspire/backend/auth-service/internal/repository/avatar"
 	"github.com/tech-inspire/backend/auth-service/internal/repository/postgres"
 	"github.com/tech-inspire/backend/auth-service/internal/repository/postgres/sqlc"
 	"github.com/tech-inspire/backend/auth-service/internal/repository/redis"
+	avatarstorage "github.com/tech-inspire/backend/auth-service/internal/repository/s3"
 	"github.com/tech-inspire/backend/auth-service/internal/service"
 	"github.com/tech-inspire/backend/auth-service/migrations"
 	"github.com/tech-inspire/backend/auth-service/pkg/generator"
@@ -26,7 +26,6 @@ import (
 	"github.com/tech-inspire/backend/auth-service/pkg/logger"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
-	"go.uber.org/zap"
 )
 
 func Run() {
@@ -100,7 +99,7 @@ func Run() {
 	}
 
 	if err := fx.ValidateApp(options...); err != nil {
-		l.Error("failed to validate fx app", zap.Error(err))
+		l.Error("failed to validate fx app", logger.Error(err))
 		return
 	}
 
@@ -108,7 +107,7 @@ func Run() {
 
 	err := app.Start(context.Background())
 	if err != nil {
-		l.Error("failed to start app", zap.Error(err))
+		l.Error("failed to start app", logger.Error(err))
 		return
 	}
 
@@ -119,6 +118,6 @@ func Run() {
 
 	err = app.Stop(context.Background())
 	if err != nil {
-		l.Warn("failed to stop app", zap.Error(err))
+		l.Warn("failed to stop app", logger.Error(err))
 	}
 }

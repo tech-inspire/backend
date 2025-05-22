@@ -8,7 +8,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func RegisterCollectors(pg *pgxpool.Pool, redis *redis.Client) {
+func RegisterCollectors(pg *pgxpool.Pool, redis redis.UniversalClient) {
 	prometheus.MustRegister(
 		pgxpoolprometheus.NewCollector(pg, map[string]string{
 			"database_name": pg.Config().ConnConfig.Database,

@@ -16,10 +16,10 @@ import (
 
 type PostsRepository struct {
 	main  *scylla.PostsRepository
-	cache *redis.PostRepository
+	cache *redis.PostsRepository
 }
 
-func NewPostsRepository(main *scylla.PostsRepository, cache *redis.PostRepository) *PostsRepository {
+func NewPostsRepository(main *scylla.PostsRepository, cache *redis.PostsRepository) *PostsRepository {
 	return &PostsRepository{main: main, cache: cache}
 }
 

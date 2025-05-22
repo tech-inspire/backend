@@ -9,7 +9,7 @@ import (
 
 func (p ImageVariant) toModel() models.ImageVariant {
 	return models.ImageVariant{
-		VariantType: p.VariantType,
+		VariantType: models.VariantType(p.VariantType),
 		URL:         p.URL,
 		Width:       p.Width,
 		Height:      p.Height,
@@ -31,7 +31,7 @@ func (p *Post) toModel() *models.Post {
 
 func imageVariantFromModel(p models.ImageVariant) ImageVariant {
 	return ImageVariant{
-		VariantType: p.VariantType,
+		VariantType: string(p.VariantType),
 		URL:         p.URL,
 		Width:       p.Width,
 		Height:      p.Height,

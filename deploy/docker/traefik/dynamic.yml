@@ -1,0 +1,20 @@
+http:
+  routers:
+    auth-router:
+      rule: "PathPrefix(`/auth.v1.AuthService/`)"
+      service: auth-service
+      entryPoints:
+        - web
+    posts-router:
+      rule: "PathPrefix(`/posts.v1.PostService/`)"
+      service: auth-service
+      entryPoints:
+        - web
+  services:
+    auth-service:
+      loadBalancer:
+        servers:
+          # h2c = HTTP/2 without TLS
+          - url: "h2c://auth-service-1:5080"
+          - url: "h2c://auth-service-2:5080"
+          - url: "h2c://auth-service-3:5080"

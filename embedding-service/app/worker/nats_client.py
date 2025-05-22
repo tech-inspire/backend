@@ -16,7 +16,7 @@ async def ensure_stream(js):
     if STREAM not in streams:
         cfg = StreamConfig(
             name=STREAM,
-            subjects=[PULL_SUBJ, PUSH_SUBJ],
+            subjects=["posts.*.*"],
             retention=RetentionPolicy.LIMITS,
             storage=StorageType.FILE,
         )

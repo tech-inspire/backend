@@ -24,7 +24,15 @@ RUN --mount=type=cache,target=/var/cache/apk \
 
 COPY --from=build /bin/server /bin/
 
-HEALTHCHECK  --interval=30s --start-interval=2s --timeout=3s --start-period=5s --retries=5 \
-    CMD wget --no-verbose --spider http://127.0.0.1:8080/health || exit 1
+COPY healthcheck.sh /usr/local/bin/healthcheck.sh
+RUN chmod +x /usr/local/bin/healthcheck.sh
+
+HEALTHCHECK \
+  --interval=30s \
+  --start-interval=2s \
+  --timeout=3s \
+  --start-period=5s \
+  --retries=5 \
+  CMD /usr/local/bin/healthcheck.sh
 
 ENTRYPOINT [ "/bin/server" ]

@@ -17,7 +17,7 @@ type PostsRepository struct {
 	session gocqlx.Session
 }
 
-func NewPostsRepository(session gocqlx.Session) *PostsRepository {
+func NewPostsRepository(session gocqlx.Session, s *gocql.Session) *PostsRepository {
 	return &PostsRepository{session: session}
 }
 

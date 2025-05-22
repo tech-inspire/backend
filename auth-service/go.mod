@@ -1,6 +1,6 @@
 module github.com/tech-inspire/backend/auth-service
 
-go 1.24
+go 1.24.3
 
 tool github.com/pressly/goose/v3/cmd/goose
 
@@ -108,6 +108,7 @@ require (
 	github.com/sethvargo/go-retry v0.3.0 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
+	github.com/tech-inspire/backend/auth-service/pkg/jwt v0.0.0-20250522113201-934e54ea6881 // indirect
 	github.com/tinylib/msgp v1.3.0 // indirect
 	github.com/tursodatabase/libsql-client-go v0.0.0-20240902231107-85af5b9d094d // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

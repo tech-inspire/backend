@@ -1,22 +1,29 @@
+x-posts-service-template: &posts-service-template
+  env_file:
+    - .env
+  build: . # use Dockerfile in the root of the repository
+  depends_on:
+    posts-redis:
+      condition: service_healthy
+  environment: &posts-service-env
+    REDIS_DSN: redis://:posts_redis_pass@posts-redis:6379
+
+    NATS_URL: 'nats:4222'
+
+    SCYLLA_HOSTS: 'scylla-node1:9042,scylla-node2:9042,scylla-node3:9042,scylla-node4:9042,scylla-node5:9042'
+    SCYLLA_USERNAME: cassandra
+    SCYLLA_PASSWORD: cassandra
+    SCYLLA_KEYSPACE: posts
+
+    POSTS_STREAM_NAME: POSTS
+
+    JWKS_PATH: 'http://auth-service-1:5080/auth/.well-known/jwks.json'
+
+
 include:
   - scylladb-compose-include.yaml
 
 services:
-#  postgres:
-#    image: postgres:17.2
-#    environment:
-#      POSTGRES_USER: auth_test_user
-#      POSTGRES_PASSWORD: auth_test_pass
-#    healthcheck:
-#      test: [ "CMD-SHELL", "pg_isready" ]
-#      interval: 1s
-#      timeout: 5s
-#      retries: 10
-#    ports:
-#      - '6063:5432'
-#    volumes:
-#      - pg_data:/var/lib/postgresql/data
-
   posts-redis:
     image: redis:7.4.0
     restart: always
@@ -25,29 +32,57 @@ services:
       interval: 1s
     ports:
       - '6064:6379'
-    command: redis-server --requirepass auth_redis_pass
+    command: redis-server --requirepass posts_redis_pass
     volumes:
       - redis_data:/data
 
-  posts-service:
-    env_file:
-      - .env
-    build: . # use Dockerfile in the root of the repository
+  posts-service-1:
     depends_on:
-      posts-redis:
+      scylla-node1:
         condition: service_healthy
+      scylla-node2:
+        condition: service_healthy
+      scylla-node3:
+        condition: service_healthy
+      scylla-node4:
+        condition: service_healthy
+      scylla-node5:
+        condition: service_healthy
+    <<: *posts-service-template
     ports:
-      - '6080:5080'
-      - '6082:5082'
+      - '6070:6070'
+      - '6072:6072'
     environment:
-      POSTGRES_DSN: postgres://auth_test_user:auth_test_pass@postgres:5432/postgres?sslmode=disable
-      REDIS_DSN: redis://:auth_redis_pass@redis:6379
+      <<: *posts-service-env
+      SERVER_ADDRESS: 0.0.0.0:6070
+      SERVER_METRICS_ADDRESS: 0.0.0.0:6072
+      APPLY_MIGRATIONS: true
 
-      SERVER_ADDRESS: 0.0.0.0:5080
-    volumes:
-      - ./keys:/keys
-      - ./data:/data
+  posts-service-2:
+    depends_on:
+      posts-service-1:
+        condition: service_healthy
+    <<: *posts-service-template
+    ports:
+      - '6080:6080'
+      - '6082:6082'
+    environment:
+      <<: *posts-service-env
+      SERVER_ADDRESS: 0.0.0.0:6080
+      SERVER_METRICS_ADDRESS: 0.0.0.0:6082
 
+  posts-service-3:
+    depends_on:
+      posts-service-1:
+        condition: service_healthy
+    <<: *posts-service-template
+    ports:
+      - '6090:6090'
+      - '6092:6092'
+    environment:
+      <<: *posts-service-env
+      SERVER_ADDRESS: 0.0.0.0:6090
+      SERVER_METRICS_ADDRESS: 0.0.0.0:6092
 
 volumes:
   pg_data:

@@ -186,7 +186,8 @@ endpoint_snitch: GossipingPropertyFileSnitch
 # you can specify which should be chosen using rpc_interface_prefer_ipv6. If false the first ipv4
 # address will be used. If true the first ipv6 address will be used. Defaults to false preferring
 # ipv4. If there is only one address it will be selected regardless of ipv4/ipv6.
-rpc_address: localhost
+rpc_address: 0.0.0.0
+api_address: 0.0.0.0
 # rpc_interface: eth1
 # rpc_interface_prefer_ipv6: false
 
@@ -197,7 +198,6 @@ rpc_port: 9160
 api_port: 10000
 
 # IP for the REST API server
-api_address: 127.0.0.1
 
 # Log WARN on any batch size exceeding this value. 5kb per batch by default.
 # Caution should be taken on increasing the size of this threshold as it can lead to node instability.

@@ -6,8 +6,15 @@ import (
 	"github.com/google/uuid"
 )
 
+type VariantType string
+
+const (
+	Original  VariantType = "original"
+	Thumbnail VariantType = "thumbnail"
+)
+
 type ImageVariant struct {
-	VariantType string
+	VariantType VariantType
 	URL         string
 	Width       int
 	Height      int

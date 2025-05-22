@@ -20,11 +20,11 @@ var errorCodes = make(map[codes.Code]connect.Code)
 func init() {
 	predefinedCodes := map[connect.Code][]codes.Code{
 		connect.CodeFailedPrecondition: {
-			codes.EmailUsed,
-			codes.UsernameUsed,
-			codes.ConfirmationCodeNotFound,
-			codes.ResetPasswordCodeNotFound,
-			codes.SessionExpired,
+			// codes.EmailUsed,
+			// codes.UsernameUsed,
+			// codes.ConfirmationCodeNotFound,
+			// codes.ResetPasswordCodeNotFound,
+			// codes.SessionExpired,
 		},
 		connect.CodeUnauthenticated: {
 			codes.Unauthorized,

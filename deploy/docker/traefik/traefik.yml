@@ -10,3 +10,12 @@ providers:
 api:
   dashboard: true
   insecure: true
+
+
+accessLog: {}
+
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addServicesLabels: true
+    entryPoint: web

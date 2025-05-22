@@ -8,20 +8,23 @@ import (
 
 	redigo "github.com/redis/go-redis/v9"
 	"github.com/scylladb/gocqlx/v3"
+	"github.com/tech-inspire/backend/auth-service/pkg/jwt"
 	"github.com/tech-inspire/backend/posts-service/internal/api/metrics"
 	"github.com/tech-inspire/backend/posts-service/internal/api/rpc"
 	"github.com/tech-inspire/backend/posts-service/internal/api/rpc/handlers"
 	"github.com/tech-inspire/backend/posts-service/internal/clients"
 	"github.com/tech-inspire/backend/posts-service/internal/config"
-	avatarstorage "github.com/tech-inspire/backend/posts-service/internal/repository/avatar"
+	"github.com/tech-inspire/backend/posts-service/internal/repository/cache"
+	"github.com/tech-inspire/backend/posts-service/internal/repository/nats"
 	"github.com/tech-inspire/backend/posts-service/internal/repository/redis"
+	"github.com/tech-inspire/backend/posts-service/internal/repository/s3"
+	"github.com/tech-inspire/backend/posts-service/internal/repository/scylla"
 	"github.com/tech-inspire/backend/posts-service/internal/service"
 	"github.com/tech-inspire/backend/posts-service/migrations"
 	"github.com/tech-inspire/backend/posts-service/pkg/generator"
 	"github.com/tech-inspire/backend/posts-service/pkg/logger"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
-	"go.uber.org/zap"
 )
 
 func Run() {
@@ -39,33 +42,44 @@ func Run() {
 			clients.NewScyllaDBClient,
 			gocqlx.NewSession,
 		),
-		fx.Invoke(migrations.ApplyMigrations),
+		fx.Invoke(migrations.ApplyMigrationsFX),
+
+		fx.Provide(
+			fx.Annotate(scylla.NewPostsRepository),
+		),
+
+		fx.Provide(func(cfg *config.Config) (*jwt.Validator, error) {
+			return jwt.NewValidatorFromURL(cfg.AuthJWKSPath)
+		}),
 
 		fx.Provide(
 			fx.Annotate(clients.NewRedis, fx.As(new(redigo.UniversalClient))),
+			redis.NewPostRepository,
+			fx.Annotate(redis.NewPendingImageUploadsRepository, fx.As(new(service.PendingImagesRepository))),
 		),
 
 		fx.Provide(
-			fx.Annotate(redis.NewPendingImageUploadsRepository, fx.As(new(service.SessionRepository))),
+			fx.Annotate(cache.NewPostsRepository, fx.As(new(service.PostsRepository))),
+		),
+
+		fx.Provide(
+			fx.Annotate(nats.NewPostsEventDispatcher, fx.As(new(service.PostsEventDispatcher))),
 		),
 
 		fx.Provide(
 			clients.NewS3Client,
-			fx.Annotate(avatarstorage.New, fx.As(new(service.AvatarStorage))),
+			fx.Annotate(imagestorage.New, fx.As(new(service.ImageStorage))),
 		),
 
 		fx.Provide(
-			fx.Annotate(service.NewAuthService, fx.As(new(handlers.AuthService))),
-			fx.Annotate(service.NewAuthService),
-			fx.Annotate(service.NewUserService, fx.As(new(handlers.UserService))),
-			fx.Annotate(service.NewAvatarService, fx.As(new(handlers.AvatarService))),
+
+			fx.Annotate(service.NewPostsService, fx.As(new(handlers.PostsService))),
 		),
 
 		//
 
 		fx.Provide(
-			// handlers.NewAuthHandler,
-			handlers.PostsHandler{},
+			handlers.NewPostsHandler,
 		),
 
 		//
@@ -87,7 +101,7 @@ func Run() {
 	}
 
 	if err := fx.ValidateApp(options...); err != nil {
-		l.Error("failed to validate fx app", zap.Error(err))
+		l.Error("failed to validate fx app", logger.Error(err))
 		return
 	}
 
@@ -95,7 +109,7 @@ func Run() {
 
 	err := app.Start(context.Background())
 	if err != nil {
-		l.Error("failed to start app", zap.Error(err))
+		l.Error("failed to start app", logger.Error(err))
 		return
 	}
 
@@ -106,6 +120,6 @@ func Run() {
 
 	err = app.Stop(context.Background())
 	if err != nil {
-		l.Warn("failed to stop app", zap.Error(err))
+		l.Warn("failed to stop app", logger.Error(err))
 	}
 }

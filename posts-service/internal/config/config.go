@@ -37,6 +37,11 @@ type Config struct {
 		Keyspace string   `env:"SCYLLA_KEYSPACE,required"`
 	}
 
+	Nats struct {
+		URL             string `env:"NATS_URL,required"`
+		PostsStreamName string `env:"POSTS_STREAM_NAME,required"`
+	}
+
 	Redis struct {
 		DSN                 string        `env:"REDIS_DSN,required"`
 		PendingImagesSetKey string        `env:"REDIS_PENDING_IMAGES_SET_KEY" env-default:"pending_uploads"`
