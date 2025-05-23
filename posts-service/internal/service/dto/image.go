@@ -9,7 +9,7 @@ import (
 type GenerateImageUploadURLParams struct {
 	UserID uuid.UUID
 
-	ImageSize   int64
+	ImageSize   int32
 	ContentType string
 }
 

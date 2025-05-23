@@ -10,7 +10,7 @@ type CreatePostParams struct {
 	UploadSessionKey string
 	ImageWidth       int
 	ImageHeight      int
-	ImageSize        int64
+	ImageSize        int32
 
 	SoundCloudSongURL        *string
 	SoundCloudSongStartMilli *int

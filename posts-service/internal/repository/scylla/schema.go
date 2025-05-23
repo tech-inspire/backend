@@ -15,7 +15,7 @@ type ImageVariant struct {
 	URL         string `cql:"url"         db:"url"`
 	Width       int    `cql:"width"       db:"width"`
 	Height      int    `cql:"height"     db:"height"`
-	Size        int64  `cql:"size"        db:"size"`
+	Size        int32  `cql:"size"        db:"size"`
 }
 
 // Post maps to the posts_by_id table.

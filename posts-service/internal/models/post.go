@@ -18,7 +18,7 @@ type ImageVariant struct {
 	URL         string
 	Width       int
 	Height      int
-	Size        int64
+	Size        int32
 }
 
 // Post maps to the posts_by_id table.

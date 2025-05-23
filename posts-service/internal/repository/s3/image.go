@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/google/uuid"
@@ -44,7 +45,7 @@ func (fs ImageStorage) GenerateTempImageUpload(ctx context.Context, params dto.G
 		Bucket:        &fs.bucketName,
 		Key:           &objectName,
 		ACL:           types.ObjectCannedACLPublicRead,
-		ContentLength: &params.ImageSize,
+		ContentLength: aws.Int64(int64(params.ImageSize)),
 		ContentType:   &params.ContentType,
 	}, s3.WithPresignExpires(expire))
 	if err != nil {
