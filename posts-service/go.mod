@@ -10,7 +10,6 @@ require (
 	connectrpc.com/cors v0.1.0
 	connectrpc.com/grpcreflect v1.3.0
 	connectrpc.com/validate v0.3.0
-	github.com/IBM/pgxpoolprometheus v1.1.2
 	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.79.3
@@ -21,7 +20,6 @@ require (
 	github.com/gocql/gocql v1.7.0
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4
 	github.com/google/uuid v1.6.0
-	github.com/jackc/pgx/v5 v5.7.5
 	github.com/matoous/go-nanoid/v2 v2.1.0
 	github.com/nats-io/nats.go v1.42.0
 	github.com/prometheus/client_golang v1.22.0
@@ -30,12 +28,12 @@ require (
 	github.com/rs/cors v1.11.1
 	github.com/scylladb/gocqlx/v3 v3.0.1
 	github.com/slok/go-http-metrics v0.13.0
-	github.com/tech-inspire/api-contracts v0.2.6
+	github.com/tech-inspire/api-contracts v0.3.3
 	github.com/tech-inspire/backend/auth-service/pkg/jwt v0.0.0-20250522113201-934e54ea6881
 	go.uber.org/fx v1.24.0
-	go.uber.org/zap v1.27.0
 	golang.org/x/net v0.40.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250519155744-55703ea1f237
+	google.golang.org/protobuf v1.36.6
 )
 
 require (
@@ -86,6 +84,7 @@ require (
 	github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
+	github.com/jackc/pgx/v5 v5.7.5 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/jonboulle/clockwork v0.5.0 // indirect
@@ -125,6 +124,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	go.uber.org/dig v1.19.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
+	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6 // indirect
 	golang.org/x/sync v0.14.0 // indirect
@@ -133,7 +133,6 @@ require (
 	golang.org/x/time v0.11.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250519155744-55703ea1f237 // indirect
 	google.golang.org/grpc v1.71.0 // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	howett.net/plist v1.0.1 // indirect

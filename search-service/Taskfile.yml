@@ -1,0 +1,34 @@
+# https://taskfile.dev/
+
+version: '3.2.1'
+
+tasks:
+  generate:
+    dir: .
+    cmds:
+      - go generate ./...
+
+  fmt:
+    cmds:
+      - task: fmt-code
+      - task: fmt-imports
+
+  fmt-code:
+    preconditions:
+      - sh: gofumpt -version
+        msg: "gofumpt is not installed.\n   go install mvdan.cc/gofumpt@latest"
+    cmd: gofumpt -l -w .
+
+  fmt-imports:
+    preconditions:
+      - sh: gci -v
+        msg: "gci is not installed.\n   go install github.com/daixiang0/gci@latest"
+    cmd: find . -name "*.go" -exec gci write -s standard -s default -s "prefix(trivia-client-api)" {} \;
+
+  migrate:
+    env:
+      GOOSE_DRIVER: postgres
+      GOOSE_DBSTRING: postgresql://posts_test_user:posts_test_pass@localhost:4063/postgres
+      GOOSE_MIGRATION_DIR: migrations
+    cmds:
+      - goose {{.CLI_ARGS}}

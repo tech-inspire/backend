@@ -35,7 +35,7 @@ services:
     image: redis:7.4.0
     restart: always
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "redis_pass", "ping"]
+      test: ["CMD", "redis-cli", "-a", "auth_redis_pass", "ping"]
       interval: 1s
     ports:
       - '5064:6379'

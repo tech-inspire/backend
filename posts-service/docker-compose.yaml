@@ -9,13 +9,12 @@ x-posts-service-template: &posts-service-template
     REDIS_DSN: redis://:posts_redis_pass@posts-redis:6379
 
     NATS_URL: 'nats:4222'
+    POSTS_STREAM_NAME: POSTS
 
     SCYLLA_HOSTS: 'scylla-node1:9042,scylla-node2:9042,scylla-node3:9042,scylla-node4:9042,scylla-node5:9042'
     SCYLLA_USERNAME: cassandra
     SCYLLA_PASSWORD: cassandra
     SCYLLA_KEYSPACE: posts
-
-    POSTS_STREAM_NAME: POSTS
 
     JWKS_PATH: 'http://auth-service-1:5080/auth/.well-known/jwks.json'
 
@@ -28,7 +27,7 @@ services:
     image: redis:7.4.0
     restart: always
     healthcheck:
-      test: [ "CMD", "redis-cli", "-a", "redis_pass", "ping" ]
+      test: [ "CMD", "redis-cli", "-a", "posts_redis_pass", "ping" ]
       interval: 1s
     ports:
       - '6064:6379'

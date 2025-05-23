@@ -1,0 +1,80 @@
+x-auth-service-template: &search-service-template
+  env_file:
+    - .env
+  build: . # use Dockerfile in the root of the repository
+  depends_on:
+    auth-postgres:
+      condition: service_healthy
+    auth-redis:
+      condition: service_healthy
+  environment: &search-service-environment
+    POSTGRES_DSN: postgres://posts_test_user:posts_test_pass@search-postgres:5432/postgres?sslmode=disable
+    REDIS_DSN: redis://:search_redis_pass@search-redis:6379
+
+    NATS_URL: 'nats:4222'
+    POSTS_STREAM_NAME: POSTS
+
+    JWKS_PATH: 'http://auth-service-1:5080/auth/.well-known/jwks.json'
+
+    EMBEDDINGS_CLIENT_URL: 'embeddings-service:50051'
+
+    SERVER_ADDRESS: 0.0.0.0:5080
+    SERVER_METRICS_ADDRESS: 0.0.0.0:5082
+
+services:
+  search-postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: posts_test_user
+      POSTGRES_PASSWORD: posts_test_pass
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    ports:
+      - '4063:5432'
+    volumes:
+      - search_pg_data:/var/lib/postgresql/data
+
+  search-redis:
+    image: redis:7.4.0
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "search_redis_pass", "ping"]
+      interval: 1s
+    ports:
+      - '4064:6379'
+    command: redis-server --requirepass search_redis_pass
+    volumes:
+      - search_redis_data:/data
+
+  search-service-1:
+    <<: *search-service-template
+    ports:
+      - '4070:5080'
+      - '4072:5082'
+    environment:
+      <<: *search-service-environment
+      APPLY_MIGRATIONS: true
+
+  search-service-2:
+    <<: *search-service-template
+    ports:
+      - '4080:5080'
+      - '4082:5082'
+    environment:
+      <<: *search-service-environment
+
+
+  search-service-3:
+    <<: *search-service-template
+    ports:
+      - '4090:5080'
+      - '4092:5082'
+    environment:
+      <<: *search-service-environment
+
+volumes:
+  search_pg_data:
+  search_redis_data:

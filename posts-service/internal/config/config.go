@@ -24,8 +24,6 @@ type Config struct {
 		UseSSL          bool   `env:"S3_USE_SSL,required"`
 	}
 
-	ApplicationURL string `env:"APPLICATION_URL,required"`
-
 	DisableStackTrace bool `env:"DISABLE_STACK_TRACE"`
 
 	AuthJWKSPath string `env:"JWKS_PATH,required"`
