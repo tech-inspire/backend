@@ -60,13 +60,15 @@ func (p PostsService) CreatePost(ctx context.Context, userID uuid.UUID, params d
 		return nil, fmt.Errorf("remove image from pending list: %w", err)
 	}
 
-	postImage, err := p.imageStorage.CreatePostImage(ctx, params.UploadSessionKey, userID)
+	postID := uuid.Must(uuid.NewV7())
+
+	postImage, err := p.imageStorage.CreatePostImage(ctx, params.UploadSessionKey, postID)
 	if err != nil {
 		return nil, fmt.Errorf("image storage: create post image: %w", err)
 	}
 
 	post := &models.Post{
-		PostID:   uuid.Must(uuid.NewV7()),
+		PostID:   postID,
 		AuthorID: userID,
 		Images: []models.ImageVariant{
 			{
