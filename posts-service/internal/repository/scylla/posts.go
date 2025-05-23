@@ -65,10 +65,13 @@ func (r *PostsRepository) GetMany(ctx context.Context, ids []uuid.UUID) ([]*mode
 	// Build a single IN query
 	stmt, names := qb.Select(postMetadata.Name).
 		Columns(postMetadata.Columns...).
-		Where(qb.In("id")).
+		Where(qb.In("post_id")).
 		ToCql()
 
-	q := r.session.Query(stmt, names).WithContext(ctx)
+	cqlIDs := generics.Convert(ids, func(id uuid.UUID) gocql.UUID {
+		return gocql.UUID(id)
+	})
+	q := r.session.Query(stmt, names).Bind(cqlIDs).WithContext(ctx)
 
 	var posts []*Post
 	if err := q.SelectRelease(&posts); err != nil {
