@@ -8,6 +8,9 @@ from app.services.compile import try_compile_model
 from app.services.device import DEVICE
 
 
+def normalize(vec: np.ndarray) -> np.ndarray:
+    return vec / np.linalg.norm(vec)
+
 class ClipEmbedder:
     """
     Service for loading and using CLIP image and text models.
@@ -36,12 +39,14 @@ class ClipEmbedder:
         self.txt_model = txt_model
 
     def embed_image(self, pil: Image.Image) -> np.ndarray:
-        """Embed an image using the CLIP model."""
+        """Embed and normalize an image using the CLIP model."""
         tensor = self.preprocess(pil).unsqueeze(0).to(self.device)
         with torch.no_grad():
             embedding = self.img_model.encode_image(tensor)
-        return embedding.cpu().numpy().flatten()
-
+        vec = embedding.cpu().numpy().flatten()
+        return vec / np.linalg.norm(vec)  # normalized
+    
     def embed_text(self, text: str) -> np.ndarray:
-        """Embed text using the CLIP model."""
-        return self.txt_model.encode([text])[0]
+        """Embed and normalize text using the CLIP model."""
+        vec = self.txt_model.encode([text])[0]
+        return vec / np.linalg.norm(vec)  # normalized
