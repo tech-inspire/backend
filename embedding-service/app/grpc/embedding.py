@@ -3,7 +3,7 @@ from concurrent import futures
 
 import grpc
 from embeddings.v1 import embeddings_pb2, embeddings_pb2_grpc
-
+from grpc_reflection.v1alpha import reflection
 from app.services.clip_embedder import ClipEmbedder
 
 
@@ -22,9 +22,16 @@ class EmbeddingsServiceServicer(embeddings_pb2_grpc.EmbeddingsServiceServicer):
 def start_grpc_server(embedder: ClipEmbedder):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
+    service_names = (
+        reflection.SERVICE_NAME,               # mandatory
+        'embeddings.v1.EmbeddingsService',                  # your own service(s)
+    )
+    reflection.enable_server_reflection(service_names, server)
+
     embeddings_pb2_grpc.add_EmbeddingsServiceServicer_to_server(
         EmbeddingsServiceServicer(embedder), server
     )
+
 
     server.add_insecure_port("[::]:50051")
     thread = threading.Thread(target=server.start)

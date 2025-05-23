@@ -1,10 +1,16 @@
 services:
   nats:
-    image: nats:latest
+    image: nats:2.11-alpine
     ports:
       - "4222:4222"
       - "8222:8222"
     command: "--cluster_name NATS -js --http_port 8222 "
+    healthcheck:
+      test: wget http://localhost:8222/healthz -q -S -O -
+      start_period: 3s
+      retries: 3
+      timeout: 3s
+      interval: 14s
 
   embeddings-service:
     build: .
