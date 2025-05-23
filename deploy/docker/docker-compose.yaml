@@ -9,6 +9,18 @@ services:
     ports:
       - "7080:80"
       - "17080:8080"
+      - "16090:9090"
     volumes:
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
       - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v3.3.1
+    ports:
+      - "19090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=24h'
+      - '--storage.tsdb.retention.size=1GB'

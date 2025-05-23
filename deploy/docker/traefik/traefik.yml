@@ -1,6 +1,8 @@
 entryPoints:
   web:
     address: ":80"
+  metrics:
+    address: ":9090"
 
 providers:
   file:
@@ -18,4 +20,4 @@ metrics:
   prometheus:
     addEntryPointsLabels: true
     addServicesLabels: true
-    entryPoint: web
+    entryPoint: metrics
