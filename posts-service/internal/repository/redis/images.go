@@ -2,10 +2,12 @@ package redis
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"time"
 
 	"github.com/redis/go-redis/v9"
+	"github.com/tech-inspire/backend/posts-service/internal/apperrors"
 	"github.com/tech-inspire/backend/posts-service/internal/config"
 )
 
@@ -43,9 +45,15 @@ func (r *PendingImageUploadsRepository) Remove(ctx context.Context, keys ...stri
 	if len(keys) == 0 {
 		return nil
 	}
-	if err := r.client.ZRem(ctx, r.setKey, toInterfaceSlice(keys)...).Err(); err != nil {
-		return err
+	removed, err := r.client.ZRem(ctx, r.setKey, toInterfaceSlice(keys)...).Result()
+	if err != nil {
+		return fmt.Errorf("zrem: %w", err)
 	}
+
+	if removed == 0 {
+		return fmt.Errorf("%w: temp image not found", apperrors.ErrForbidden)
+	}
+
 	return nil
 }
 
