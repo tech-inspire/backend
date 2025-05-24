@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"connectrpc.com/connect"
 	"github.com/google/uuid"
@@ -58,7 +59,19 @@ func (a UserHandler) GetUser(ctx context.Context, c *connect.Request[v1.GetUserR
 func (a UserHandler) UploadAvatar(ctx context.Context, c *connect.Request[v1.UploadUserAvatarRequest]) (*connect.Response[v1.UploadUserAvatarResponse], error) {
 	token := authmiddleware.GetUserInfo(ctx)
 
+	if len(c.Msg.Content) == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("content is empty"))
+	}
+
 	contentType := http.DetectContentType(c.Msg.Content)
+	if contentType != c.Msg.ContentType {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid content type: %s != %s", contentType, c.Msg.ContentType))
+	}
+
+	allowedContentTypes := []string{"image/jpeg", "image/png", "image/webp"}
+	if !slices.Contains(allowedContentTypes, contentType) {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("content type %s is not supported", contentType))
+	}
 
 	err := a.avatarService.UploadUserAvatar(ctx, dto.UploadUserAvatar{
 		Data:        c.Msg.Content,
