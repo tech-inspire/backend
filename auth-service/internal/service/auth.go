@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/tech-inspire/backend/auth-service/pkg/generator"
 	"time"
 
 	"github.com/go-errors/errors"
@@ -12,7 +13,6 @@ import (
 	"github.com/tech-inspire/backend/auth-service/internal/config"
 	"github.com/tech-inspire/backend/auth-service/internal/models"
 	"github.com/tech-inspire/backend/auth-service/internal/service/dto"
-	"github.com/tech-inspire/backend/auth-service/pkg/generator"
 	"github.com/tech-inspire/backend/auth-service/pkg/logger"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
@@ -31,6 +31,8 @@ type AuthService struct {
 
 	refreshTokenDuration time.Duration
 	sessionsLimitPerUser int
+
+	testMode bool
 }
 
 func NewAuthService(
@@ -58,6 +60,8 @@ func NewAuthService(
 
 		refreshTokenDuration: cfg.JWT.RefreshTokenDuration,
 		sessionsLimitPerUser: cfg.Session.MaxAllowedSessionsPerUser,
+
+		testMode: cfg.TestMode,
 	}
 
 	log.Info("starting with auth configuration",
@@ -113,12 +117,16 @@ func (a AuthService) Register(ctx context.Context, params dto.RegisterParams) (*
 		return nil, errors.Errorf("hash password: %w", err)
 	}
 
-	const codeLength = 6
-	code := generator.NumberCode(codeLength)
+	code := "111111"
 
-	err = a.mailClient.SendMail(params.Email, mail.ConfirmEmail(code))
-	if err != nil {
-		return nil, errors.Errorf("send confirmation email: %w", err)
+	if !a.testMode {
+		const codeLength = 6
+		code = generator.NumberCode(codeLength)
+
+		err = a.mailClient.SendMail(params.Email, mail.ConfirmEmail(code))
+		if err != nil {
+			return nil, errors.Errorf("send confirmation email: %w", err)
+		}
 	}
 
 	err = a.confirmationCodesRepository.StoreCode(ctx, models.ConfirmationUserData{
