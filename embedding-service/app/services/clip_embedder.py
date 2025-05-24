@@ -26,7 +26,6 @@ class ClipEmbedder:
         img_model = try_compile_model(img_model)
 
         # Load and compile text model
-
         txt_model = SentenceTransformer(
             "sentence-transformers/clip-ViT-B-32-multilingual-v1",
             device=self.device,
@@ -48,5 +47,12 @@ class ClipEmbedder:
     
     def embed_text(self, text: str) -> np.ndarray:
         """Embed and normalize text using the CLIP model."""
-        vec = self.txt_model.encode([text])[0]
+
+        # or use text model
+        # vec = self.txt_model.encode([text])[0]
+
+        text_tokenized = clip.tokenize([text]).to(DEVICE)
+        with torch.no_grad():
+            text_features = self.img_model.encode_text(text_tokenized)
+        vec = text_features.detach().cpu().numpy().flatten()
         return vec / np.linalg.norm(vec)  # normalized

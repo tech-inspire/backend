@@ -22,9 +22,20 @@ func NewEmbeddingServiceClient(cfg *config.Config) (*EmbeddingServiceClient, err
 
 	c := embeddingsv1.NewEmbeddingsServiceClient(conn)
 
-	return &EmbeddingServiceClient{
+	client := &EmbeddingServiceClient{
 		client: c,
-	}, nil
+	}
+
+	if err = client.Check(); err != nil {
+		return nil, fmt.Errorf("grpc: client check: %w", err)
+	}
+
+	return client, nil
+}
+
+func (s EmbeddingServiceClient) Check() error {
+	_, err := s.GenerateTextEmbeddings(context.TODO(), "test")
+	return err
 }
 
 func (e EmbeddingServiceClient) GenerateTextEmbeddings(ctx context.Context, text string) ([]float32, error) {
