@@ -13,6 +13,7 @@ type Config struct {
 		MetricsAddress     string   `env:"SERVER_METRICS_ADDRESS,required"`
 		ProxyHeader        string   `env:"SERVER_PROXY_HEADER,required"`
 		CORSAllowedOrigins []string `env:"CORS_ALLOWED_ORIGINS" envDefault:"*"`
+		DebugCORS          bool     `env:"CORS_DEBUG" envDefault:"false"`
 	}
 
 	S3 struct {
@@ -42,6 +43,8 @@ type Config struct {
 		PostgresDSN string `env:"POSTGRES_DSN,required"`
 		RedisDSN    string `env:"REDIS_DSN,required"`
 	}
+
+	TestMode bool `env:"TEST_MODE"`
 
 	SMTP struct {
 		From     string `env:"EMAILS_SMTP_FROM,required"`

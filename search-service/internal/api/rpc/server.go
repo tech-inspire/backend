@@ -30,10 +30,13 @@ import (
 )
 
 func CORSMiddleware(cfg *config.Config) func(http.Handler) http.Handler {
+	allowedHeaders := connectcors.AllowedHeaders()
+	allowedHeaders = append(allowedHeaders, "Authorization")
+
 	corsMiddleware := cors.New(cors.Options{
 		AllowedOrigins: cfg.Server.CORSAllowedOrigins,
 		AllowedMethods: connectcors.AllowedMethods(),
-		AllowedHeaders: connectcors.AllowedHeaders(),
+		AllowedHeaders: allowedHeaders,
 		ExposedHeaders: connectcors.ExposedHeaders(),
 	})
 	return corsMiddleware.Handler

@@ -13,6 +13,7 @@ type Config struct {
 		MetricsAddress     string   `env:"SERVER_METRICS_ADDRESS,required"`
 		ProxyHeader        string   `env:"SERVER_PROXY_HEADER,required"`
 		CORSAllowedOrigins []string `env:"CORS_ALLOWED_ORIGINS" envDefault:"*"`
+		DebugCORS          bool     `env:"CORS_DEBUG" envDefault:"false"`
 	}
 
 	S3 struct {
