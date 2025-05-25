@@ -15,6 +15,10 @@ on:
       - '.github/workflows/build-api-posts.yml'
       - 'posts-service/**'
 
+permissions:
+  contents: read
+  packages: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
