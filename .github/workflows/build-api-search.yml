@@ -1,4 +1,4 @@
-name: Build Posts Service
+name: Build Search Service
 
 on:
   workflow_dispatch:
