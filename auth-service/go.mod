@@ -32,7 +32,7 @@ require (
 	github.com/redis/go-redis/v9 v9.8.0
 	github.com/rs/cors v1.11.1
 	github.com/slok/go-http-metrics v0.13.0
-	github.com/tech-inspire/api-contracts v0.3.0
+	github.com/tech-inspire/api-contracts v0.3.5
 	github.com/tech-inspire/backend/auth-service/pkg/jwt v0.0.0-20250522184843-42020cfccc47
 	go.uber.org/fx v1.24.0
 	go.uber.org/zap v1.27.0
