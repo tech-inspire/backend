@@ -1,0 +1,28 @@
+name: Build Posts Service
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_build.yml'
+      - '.github/workflows/build-api-search.yml'
+      - 'search-service/**'
+  pull_request:
+    paths:
+      - '.github/workflows/_build.yml'
+      - '.github/workflows/build-api-search.yml'
+      - 'search-service/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Service
+    uses: ./.github/workflows/_build.yml
+    with:
+      context: '.'
+      service: 'search-service'
