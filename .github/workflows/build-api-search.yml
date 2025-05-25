@@ -17,7 +17,7 @@ on:
 permissions:
   contents: read
   packages: write
-  
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -27,5 +27,5 @@ jobs:
     name: Build Service
     uses: ./.github/workflows/_build.yml
     with:
-      context: '.'
+      context: 'search-service'
       service: 'search-service'
