@@ -1,0 +1,31 @@
+name: Build Embeddings Service
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/_build.yml'
+      - '.github/workflows/build-api-embeddings.yml'
+      - 'embedding-service/**'
+  pull_request:
+    paths:
+      - '.github/workflows/_build.yml'
+      - '.github/workflows/build-api-embeddings.yml'
+      - 'embedding-service/**'
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Service
+    uses: ./.github/workflows/_build.yml
+    with:
+      context: 'embedding-service'
+      service: 'embedding-service'
