@@ -21,6 +21,7 @@ services:
       REDIS_PASSWORD: likes_redis_pass
       PORT: 40051
       HOST: 0.0.0.0
+      JWKS_URL: 'http://auth-service-1:5080/auth/.well-known/jwks.json'
 
 volumes:
   redis_data:
