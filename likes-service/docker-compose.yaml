@@ -1,0 +1,26 @@
+services:
+  likes-redis:
+    image: redis:7.4.0
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "likes_redis_pass", "ping" ]
+      interval: 1s
+    command: redis-server --requirepass likes_redis_pass
+    volumes:
+      - redis_data:/data
+
+  likes-service:
+    build: .
+    depends_on:
+      likes-redis:
+        condition: service_healthy
+    ports:
+      - '40051:40051'
+    environment:
+      REDIS_HOST: likes-redis
+      REDIS_PASSWORD: likes_redis_pass
+      PORT: 40051
+      HOST: 0.0.0.0
+
+volumes:
+  redis_data:

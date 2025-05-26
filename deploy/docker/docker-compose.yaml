@@ -3,6 +3,7 @@ include:
   - ../../embedding-service/docker-compose.yaml
   - ../../posts-service/docker-compose.yaml
   - ../../search-service/docker-compose.yaml
+  - ../../likes-service/docker-compose.yaml
 services:
   traefik:
     image: traefik:v3.4

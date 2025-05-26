@@ -15,6 +15,11 @@ http:
       service: search-service
       entryPoints:
         - web
+    likes-router:
+      rule: "PathPrefix(`/likes.v1.LikesService/`)"
+      service: likes-service
+      entryPoints:
+        - web
   services:
     auth-service:
       loadBalancer:
@@ -37,3 +42,8 @@ http:
           - url: "h2c://search-service-1:5080"
           - url: "h2c://search-service-2:5080"
           - url: "h2c://search-service-3:5080"
+    likes-service:
+      loadBalancer:
+        servers:
+          # h2c = HTTP/2 without TLS
+          - url: "h2c://likes-service:40051"
