@@ -2,7 +2,8 @@ import { fastify } from "fastify";
 import { fastifyConnectPlugin } from "@connectrpc/connect-fastify";
 import { cors as connectCors } from "@connectrpc/connect";
 import fastifyCors from "@fastify/cors";
-import routes from "./grpc/connect";
+import routes from "./api/likes";
+import { authInterceptor } from "./api/auth";
 
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   const PORT = parseInt(process.env.PORT || "40051");
@@ -25,7 +26,17 @@ export async function build() {
     exposedHeaders: [...connectCors.exposedHeaders],
   });
 
-  await server.register(fastifyConnectPlugin, { routes });
+  const JWKS_URL = process.env.JWKS_URL;
+  if (!JWKS_URL) {
+    throw new Error("Invalid JWKS_URL");
+  }
+
+  const allowedProcedures: string[] = ["GetLikesCount", "GetUserLikedPosts"];
+
+  await server.register(fastifyConnectPlugin, {
+    routes,
+    interceptors: [authInterceptor(JWKS_URL, allowedProcedures)],
+  });
 
   return server;
 }
