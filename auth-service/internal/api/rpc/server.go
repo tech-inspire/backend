@@ -83,6 +83,7 @@ func RegisterRoutes(params Params, r *chi.Mux) error {
 		authv1connect.AuthServiceRegisterProcedure,
 		authv1connect.AuthServiceConfirmEmailProcedure,
 		authv1connect.AuthServiceGetUserProcedure,
+		authv1connect.AuthServiceRefreshTokenProcedure,
 	}
 
 	authMiddleware := authn.NewMiddleware(
