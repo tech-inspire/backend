@@ -7,10 +7,6 @@ import {
   Interceptor,
 } from "@connectrpc/connect";
 
-const JWKS_URL = new URL(
-  "http://auth-service-1:5080/auth/.well-known/jwks.json",
-);
-
 type User = { userID: string; isAnonymous: boolean };
 
 export const userContextKey = createContextKey<User>(
@@ -21,7 +17,7 @@ export function authInterceptor(
   jwksUrl: string,
   allowedMethods: string[] = [],
 ): Interceptor {
-  const jwks = createRemoteJWKSet(JWKS_URL);
+  const jwks = createRemoteJWKSet(new URL(jwksUrl));
 
   return (next) => async (request) => {
     if (allowedMethods.includes(request.method.name))
