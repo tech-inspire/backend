@@ -4,6 +4,7 @@ import { cors as connectCors } from "@connectrpc/connect";
 import fastifyCors from "@fastify/cors";
 import routes from "./api/likes";
 import { authInterceptor } from "./api/auth";
+import { startPostsDeletedSubscriber } from "./events/nats";
 
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   const PORT = parseInt(process.env.PORT || "40051");
@@ -36,6 +37,10 @@ export async function build() {
   await server.register(fastifyConnectPlugin, {
     routes,
     interceptors: [authInterceptor(JWKS_URL, allowedProcedures)],
+  });
+
+  startPostsDeletedSubscriber("POSTS").catch((err) => {
+    console.error("Failed to start jetstream subscriber:", err);
   });
 
   return server;
