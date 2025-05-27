@@ -67,24 +67,42 @@ export async function getUserLikedPosts(
   return redis.zrevrange(userLikedPostsKey(userId), offset, offset + limit - 1);
 }
 
+async function* scanSetMembers(key: string, count = 1000) {
+  let cursor = "0";
+  do {
+    const [nextCursor, members] = await redis.sscan(
+      key,
+      cursor,
+      "COUNT",
+      count,
+    );
+    cursor = nextCursor;
+    for (const member of members) {
+      yield member;
+    }
+  } while (cursor !== "0");
+}
+
 export async function deletePostLikesData(postId: string): Promise<void> {
   const postLikesKey = postLikedUsersKey(postId);
   const countKey = postLikesCountKey(postId);
 
-  // Get all users who liked this post
-  const userIds = await redis.smembers(postLikesKey);
+  const batchSize = 1000;
+  let opCount = 0;
+  let pipeline = redis.pipeline();
 
-  const pipeline = redis.pipeline();
-
-  // Remove the post from each user's liked posts sorted set
-  for (const userId of userIds) {
+  for await (const userId of scanSetMembers(postLikesKey)) {
     pipeline.zrem(userLikedPostsKey(userId), postId);
+    opCount++;
+
+    if (opCount >= batchSize) {
+      await pipeline.exec();
+      pipeline = redis.pipeline();
+      opCount = 0;
+    }
   }
 
-  // Delete the set of users who liked the post
   pipeline.del(postLikesKey);
-
-  // Delete the likes count
   pipeline.del(countKey);
 
   await pipeline.exec();
