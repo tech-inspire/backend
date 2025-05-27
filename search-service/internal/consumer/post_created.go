@@ -17,19 +17,10 @@ import (
 
 type PostsEventProcessor interface {
 	ProcessEventUpdated(ctx context.Context, event dto.PostCreatedEvent) error
+	ProcessEventDeleted(ctx context.Context, postID uuid.UUID) error
 }
 
-type PostCreatedEventConsumer struct {
-	js nats.JetStreamContext
-}
-
-func NewPostCreatedEventConsumer(js nats.JetStreamContext) (PostCreatedEventConsumer, error) {
-	return PostCreatedEventConsumer{
-		js: js,
-	}, nil
-}
-
-func (c PostCreatedEventConsumer) Start(lc fx.Lifecycle, processor PostsEventProcessor) error {
+func StartPostCreatedEventsConsumer(js nats.JetStreamContext, lc fx.Lifecycle, processor PostsEventProcessor) error {
 	process := func(msg *nats.Msg) error {
 		var event postsv1.PostCreatedEvent
 		if err := proto.Unmarshal(msg.Data, &event); err != nil {
@@ -73,12 +64,14 @@ func (c PostCreatedEventConsumer) Start(lc fx.Lifecycle, processor PostsEventPro
 			return fmt.Errorf("ack event: %w", err)
 		}
 
+		slog.Info("processed posts created event", slog.String("sub", msg.Subject))
+
 		return nil
 	}
 
 	shutDownCtx, cancel := context.WithCancel(context.Background())
 
-	sub, err := c.js.QueueSubscribe(
+	sub, err := js.QueueSubscribe(
 		"posts.*.created",
 		"posts-service-posts-workers",
 		func(msg *nats.Msg) {

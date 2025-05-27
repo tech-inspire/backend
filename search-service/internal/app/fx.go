@@ -40,13 +40,10 @@ func Run() {
 			fx.Annotate(postgres.NewSearchRepository, fx.As(new(service.SearchRepository))),
 		),
 
-		fx.Provide(
-			clients.NewNatsJetstreamClient,
-			fx.Annotate(consumer.NewImageEmbeddingsUpdatesConsumer),
-			fx.Annotate(consumer.NewPostCreatedEventConsumer),
-		),
-		fx.Invoke(consumer.ImageEmbeddingsUpdatesConsumer.Start),
-		fx.Invoke(consumer.PostCreatedEventConsumer.Start),
+		fx.Provide(clients.NewNatsJetstreamClient),
+		fx.Invoke(consumer.StartPostDeletedEventsConsumer),
+		fx.Invoke(consumer.StartPostCreatedEventsConsumer),
+		fx.Invoke(consumer.StartImageEmbeddingsUpdatesConsumer),
 
 		fx.Provide(
 			fx.Annotate(service.NewSearchService, fx.As(new(handlers.SearchService))),

@@ -60,3 +60,7 @@ func (s *SearchService) SearchImages(ctx context.Context, params dto.SearchPosts
 
 	return s.repo.SearchPosts(ctx, processedParams)
 }
+
+func (s *SearchService) ProcessEventDeleted(ctx context.Context, postID uuid.UUID) error {
+	return s.repo.DeletePostInfo(ctx, postID)
+}
