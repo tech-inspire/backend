@@ -19,4 +19,5 @@ type SearchRepository interface {
 	SearchPosts(ctx context.Context, input dto.ProcessedSearchPostsParams) ([]dto.SearchResult, error)
 	UpsertPost(ctx context.Context, params dto.CreatePostParams) error
 	UpsertImageEmbeddings(ctx context.Context, postID uuid.UUID, embeddings []float32) error
+	DeletePostInfo(ctx context.Context, postID uuid.UUID) error
 }

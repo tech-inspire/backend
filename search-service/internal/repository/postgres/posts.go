@@ -42,6 +42,15 @@ func (r SearchRepository) UpsertPost(ctx context.Context, params dto.CreatePostP
 	return nil
 }
 
+func (r SearchRepository) DeletePostInfo(ctx context.Context, postID uuid.UUID) error {
+	_, err := r.pool.Exec(ctx, "DELETE FROM posts_search_info WHERE post_id = $1", postID)
+	if err != nil {
+		return fmt.Errorf("delete post: %w", err)
+	}
+
+	return nil
+}
+
 func (r SearchRepository) UpsertImageEmbeddings(ctx context.Context, postID uuid.UUID, embeddings []float32) error {
 	v := pgvector.NewVector(embeddings)
 

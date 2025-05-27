@@ -121,5 +121,10 @@ func (p PostsService) DeletePostByID(ctx context.Context, userID uuid.UUID, post
 		return fmt.Errorf("delete post: %w", err)
 	}
 
+	err = p.dispatcher.DispatchPostDeletedEvent(ctx, post, time.Now())
+	if err != nil {
+		return fmt.Errorf("dispatch post deleted event: %w", err)
+	}
+
 	return nil
 }

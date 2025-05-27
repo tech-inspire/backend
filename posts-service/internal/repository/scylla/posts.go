@@ -91,9 +91,19 @@ func (r *PostsRepository) Update(ctx context.Context, postID uuid.UUID, params d
 
 // Delete removes a Post by its post_id.
 func (r *PostsRepository) Delete(ctx context.Context, id uuid.UUID) error {
-	// stmt, names := postTable.Delete().Where(qb.Eq("post_id")).ToCql()
-	// q := gocqlx.Query(r.session.Query(stmt, id), names).WithContext(ctx)
-	// return q.ExecRelease()
+	query := r.session.
+		Query(postTable.Delete()).
+		WithContext(ctx).
+		Consistency(gocql.Two).
+		Bind(gocql.UUID(id))
 
-	panic("implement me!")
+	if err := query.Err(); err != nil {
+		return fmt.Errorf("delete query: bind post_id: %w", err)
+	}
+
+	if err := query.ExecRelease(); err != nil {
+		return fmt.Errorf("delete query: exec release: %w", err)
+	}
+
+	return nil
 }
