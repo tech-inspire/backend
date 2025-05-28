@@ -6,5 +6,4 @@ PORT=${PORT:-50051}
 
 URL="localhost:$PORT"
 
-/usr/local/bin/grpcurl -plaintext -d '{"text": "ping"}' ${URL} embeddings.v1.EmbeddingsService/GenerateTextEmbeddings
-
+/usr/local/bin/grpc_health_probe -addr=$URL

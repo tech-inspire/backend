@@ -27,17 +27,6 @@ RUN --mount=type=cache,id=pip-cache,target=/root/.cache/pip \
 # Copy application code
 COPY . .
 
-ARG TARGETOS
-ARG TARGETARCH
-
-ARG GRPC_CURL_VERSION='1.9.3'
-ADD https://github.com/fullstorydev/grpcurl/releases/download/v${GRPC_CURL_VERSION}/grpcurl_${GRPC_CURL_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz /tmp/grpcurl.tar.gz
-RUN tar -xzf /tmp/grpcurl.tar.gz -C /tmp && \
-    mv /tmp/grpcurl /usr/local/bin/grpcurl && \
-    chmod +x /usr/local/bin/grpcurl && \
-    rm /tmp/grpcurl.tar.gz
-
-
 # Stage 2: Runtime
 FROM python:3.12-slim AS runtime
 
@@ -57,8 +46,12 @@ ENV PATH="/opt/venv/bin:$PATH"
 EXPOSE 8000
 EXPOSE 50051
 
-COPY --from=builder /usr/local/bin/grpcurl /usr/local/bin/grpcurl
-RUN chmod +x /usr/local/bin/grpcurl
+ARG TARGETOS
+ARG TARGETARCH
+
+ARG GRPC_HEALTH_PROBE_VERSION='v0.4.7'
+ADD https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/$GRPC_HEALTH_PROBE_VERSION/grpc_health_probe-${TARGETOS}-${TARGETARCH} /usr/local/bin/grpc_health_probe
+RUN chmod +x /usr/local/bin/grpc_health_probe
 
 COPY healthcheck.sh /usr/local/bin/healthcheck.sh
 RUN chmod +x /usr/local/bin/healthcheck.sh
