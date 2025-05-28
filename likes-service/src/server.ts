@@ -4,13 +4,34 @@ import { cors as connectCors } from "@connectrpc/connect";
 import fastifyCors from "@fastify/cors";
 import routes from "./api/likes";
 import { authInterceptor } from "./api/auth";
-import { startPostsDeletedSubscriber } from "./events/nats";
+import {
+  startPostsDeletedSubscriber,
+  stopPostsDeletedSubscriber,
+} from "./events/nats";
 
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   const PORT = parseInt(process.env.PORT || "40051");
   const HOST = process.env.HOST || "localhost";
   const server = await build();
+
+  const close = async () => {
+    console.log("Shutting down...");
+    try {
+      await server.close();
+      console.log("Fastify server closed.");
+    } catch (err) {
+      console.error("Error closing server:", err);
+    }
+
+    await stopPostsDeletedSubscriber();
+    process.exit(0);
+  };
+
+  process.on("SIGINT", close);
+  process.on("SIGTERM", close);
+
   await server.listen({ host: HOST, port: PORT });
+  console.log(`Server listening on ${HOST}:${PORT}`);
 }
 
 export async function build() {

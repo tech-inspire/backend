@@ -1,4 +1,4 @@
-import { AckPolicy, connect } from "nats";
+import { AckPolicy, connect, NatsConnection } from "nats";
 import {
   PostDeletedEventSchema,
   type PostDeletedEvent,
@@ -6,8 +6,12 @@ import {
 import { fromBinary } from "@bufbuild/protobuf";
 import { deletePostLikesData } from "../db/likesRepository";
 
+let natsConnection: NatsConnection | null = null;
+
 export async function startPostsDeletedSubscriber(streamName: string) {
   const nc = await connect({ servers: "nats://nats:4222" });
+  natsConnection = nc;
+
   const js = nc.jetstream();
   const manager = await js.jetstreamManager();
 
@@ -51,8 +55,13 @@ export async function startPostsDeletedSubscriber(streamName: string) {
 }
 
 export async function stopPostsDeletedSubscriber() {
-  // TODO: add draining
-  // await sub.drain();
-  // await nc.drain();
-  console.log("[posts-deleted.subscriber] Gracefully shut down.");
+  if (natsConnection) {
+    try {
+      console.log("Draining NATS connection...");
+      await natsConnection.drain();
+      console.log("NATS connection drained.");
+    } catch (err) {
+      console.error("Error draining NATS:", err);
+    }
+  }
 }
