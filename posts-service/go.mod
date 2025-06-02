@@ -23,8 +23,8 @@ require (
 	github.com/matoous/go-nanoid/v2 v2.1.0
 	github.com/nats-io/nats.go v1.42.0
 	github.com/prometheus/client_golang v1.22.0
-	github.com/redis/go-redis/extra/redisprometheus/v9 v9.8.0
-	github.com/redis/go-redis/v9 v9.8.0
+	github.com/redis/go-redis/extra/redisprometheus/v9 v9.9.0
+	github.com/redis/go-redis/v9 v9.9.0
 	github.com/rs/cors v1.11.1
 	github.com/scylladb/gocqlx/v3 v3.0.1
 	github.com/slok/go-http-metrics v0.13.0
