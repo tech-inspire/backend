@@ -13,7 +13,7 @@ require (
 	github.com/AfterShip/email-verifier v1.4.1
 	github.com/IBM/pgxpoolprometheus v1.1.2
 	github.com/MicahParks/jwkset v0.9.6
-	github.com/MicahParks/keyfunc/v3 v3.3.11
+	github.com/MicahParks/keyfunc/v3 v3.4.0
 	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.79.4
