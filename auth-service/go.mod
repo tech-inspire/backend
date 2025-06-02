@@ -16,7 +16,7 @@ require (
 	github.com/MicahParks/keyfunc/v3 v3.3.11
 	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.79.4
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.80.0
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/go-errors/errors v1.5.1
