@@ -28,7 +28,7 @@ require (
 	github.com/rs/cors v1.11.1
 	github.com/scylladb/gocqlx/v3 v3.0.1
 	github.com/slok/go-http-metrics v0.13.0
-	github.com/tech-inspire/api-contracts v0.3.5
+	github.com/tech-inspire/api-contracts v0.3.10
 	github.com/tech-inspire/backend/auth-service/pkg/jwt v0.0.0-20250522113201-934e54ea6881
 	go.uber.org/fx v1.24.0
 	golang.org/x/net v0.40.0

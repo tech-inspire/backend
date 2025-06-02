@@ -318,8 +318,8 @@ github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/stretchr/testify v1.10.0 h1:Xv5erBjTwe/5IxqUQTdXv5kgmIvbHo3QQyRwhJsOfJA=
 github.com/stretchr/testify v1.10.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
-github.com/tech-inspire/api-contracts v0.3.5 h1:DHZjlz5UYPLp5fKLmHzv49xIdPcZqqzVfrW+F05I7Rk=
-github.com/tech-inspire/api-contracts v0.3.5/go.mod h1:BL7xn9tuJZPrQIT3DyB6lXVZk0K4F0LQ0TcgCVmialw=
+github.com/tech-inspire/api-contracts v0.3.10 h1:86ZtLRbYBckUe8X9e/ynmctUVtvctBsZ4MJ6PNu9kwo=
+github.com/tech-inspire/api-contracts v0.3.10/go.mod h1:BL7xn9tuJZPrQIT3DyB6lXVZk0K4F0LQ0TcgCVmialw=
 github.com/tech-inspire/backend/auth-service/pkg/jwt v0.0.0-20250522113201-934e54ea6881 h1:641ObN8CMuRBmM7A/D9Wb3h0fwVpCP0bF634JpCnvwg=
 github.com/tech-inspire/backend/auth-service/pkg/jwt v0.0.0-20250522113201-934e54ea6881/go.mod h1:CedGjTfZ/UMEzqz+jCofhYTjq0YvaM5kxK3Bj8NpVak=
 github.com/tidwall/pretty v1.0.0/go.mod h1:XNkn88O1ChpSDQmQeStsy+sBenx6DDtFZJxhVysOjyk=
