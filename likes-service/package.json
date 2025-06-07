@@ -49,7 +49,7 @@
     "redis-parser": "^3.0.0",
     "require-directory": "^2.1.1",
     "standard-as-callback": "^2.1.0",
-    "string-width": "^4.2.3",
+    "string-width": "^7.2.0",
     "strip-ansi": "^6.0.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
