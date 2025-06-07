@@ -23,5 +23,5 @@ yarl==1.20.0
 bufbuild-protovalidate-protocolbuffers-pyi==31.0.0.1.20250423154025+ec0af4932e5e
 bufbuild-protovalidate-protocolbuffers-python==31.0.0.1.20250423154025+ec0af4932e5e
 inspire_protobuf @ git+https://github.com/tech-inspire/api-contracts@11fa777355f0267caeb544a0bf55a53dfc6aedcc
-grpcio-reflection==1.72.0rc1
+grpcio-reflection==1.73.0rc1
 grpcio-health-checking==1.72.0rc1
