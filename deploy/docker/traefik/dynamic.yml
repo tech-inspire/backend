@@ -46,4 +46,4 @@ http:
       loadBalancer:
         servers:
           # h2c = HTTP/2 without TLS
-          - url: "h2c://likes-service:40051"
+          - url: "http://likes-service:40051"
