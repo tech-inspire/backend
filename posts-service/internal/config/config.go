@@ -17,12 +17,9 @@ type Config struct {
 	}
 
 	S3 struct {
-		Endpoint        string `env:"S3_ENDPOINT,required"`
-		AccessKeyID     string `env:"S3_ACCESS_KEY_ID,required"`
-		SecretAccessKey string `env:"S3_SECRET_ACCESS_KEY,required"`
-		BucketName      string `env:"S3_BUCKET_NAME,required"`
-		Region          string `env:"S3_REGION,required"`
-		UseSSL          bool   `env:"S3_USE_SSL,required"`
+		Endpoint         string `env:"S3_ENDPOINT,required"`
+		BucketName       string `env:"S3_BUCKET_NAME,required"`
+		MinioResolveMode bool   `env:"S3_MINIO_RESOLVE_MODE" envDefault:"false"`
 	}
 
 	DisableStackTrace bool `env:"DISABLE_STACK_TRACE"`
