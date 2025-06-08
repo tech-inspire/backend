@@ -35,7 +35,9 @@ if (process.argv[1] === new URL(import.meta.url).pathname) {
 }
 
 export async function build() {
-  const server = fastify();
+  const server = fastify({
+    logger: true,
+  });
 
   server.get("/health", async () => {
     return { status: "ok" };
