@@ -11,7 +11,7 @@ multidict==6.4.4
 nats-py==2.10.0
 numpy==2.2.6
 pillow==11.2.1
-protobuf==6.31.0
+protobuf==6.31.1
 sentence-transformers==4.1.0
 tokenizers==0.21.1
 torch==2.7.1
