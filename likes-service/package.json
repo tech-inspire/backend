@@ -13,7 +13,7 @@
     "@fastify/jwt": "^9.1.0",
     "@grpc/reflection": "^1.0.4",
     "@nats-io/jetstream": "^3.0.2",
-    "acorn": "^8.14.1",
+    "acorn": "^8.15.0",
     "acorn-walk": "^8.3.4",
     "ansi-regex": "^6.1.0",
     "ansi-styles": "^6.2.1",
