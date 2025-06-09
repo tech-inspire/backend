@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/tech-inspire/backend/auth-service/pkg/generator"
 	"time"
 
 	"github.com/go-errors/errors"
@@ -13,6 +12,7 @@ import (
 	"github.com/tech-inspire/backend/auth-service/internal/config"
 	"github.com/tech-inspire/backend/auth-service/internal/models"
 	"github.com/tech-inspire/backend/auth-service/internal/service/dto"
+	"github.com/tech-inspire/backend/auth-service/pkg/generator"
 	"github.com/tech-inspire/backend/auth-service/pkg/logger"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"

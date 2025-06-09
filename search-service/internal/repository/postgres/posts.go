@@ -101,6 +101,64 @@ type searchPostsRow struct {
 	SimilarityScore *float32  `db:"similarity_score"`
 }
 
+type iterator struct {
+	ctx context.Context
+	tx  pgx.Tx
+	err error
+}
+
+func (i *iterator) Err() error {
+	return i.err
+}
+
+func (i *iterator) Close() error {
+	_, err := i.tx.Exec(i.ctx, "CLOSE curs")
+	if err != nil {
+		return fmt.Errorf("close iterator: %w", err)
+	}
+	if err = i.tx.Commit(i.ctx); err != nil {
+		return fmt.Errorf("commit tx: %w", err)
+	}
+	return nil
+}
+
+func (i *iterator) PostIDs(yield func(uuid.UUID) bool) {
+	var id uuid.UUID
+
+	for {
+		err := i.tx.QueryRow(i.ctx, "FETCH NEXT FROM curs").Scan(&id)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				break
+			}
+			i.err = err
+		}
+
+		if !yield(id) {
+			break
+		}
+	}
+
+	i.err = errors.Join(i.err, i.Close())
+}
+
+func (r SearchRepository) GetPostsWithoutImageEmbeddings(ctx context.Context) (dto.Iterator, error) {
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("acquire tx: %w", err)
+	}
+
+	_, err = tx.Exec(ctx, "DECLARE curs CURSOR FOR SELECT post_id FROM posts_search_info WHERE image_embedding IS NULL")
+	if err != nil {
+		return nil, fmt.Errorf("create cursor: %w", err)
+	}
+
+	return &iterator{
+		ctx: ctx,
+		tx:  tx,
+	}, nil
+}
+
 func (r SearchRepository) SearchPosts(ctx context.Context, input dto.ProcessedSearchPostsParams) ([]dto.SearchResult, error) {
 	sb := sqlbuilder.NewSelectBuilder()
 	sb.SetFlavor(sqlbuilder.PostgreSQL)

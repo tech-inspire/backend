@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/nats-io/nats.go"
 	postsv1 "github.com/tech-inspire/api-contracts/api/gen/go/posts/v1"
+	"github.com/tech-inspire/backend/search-service/internal/clients"
 	"github.com/tech-inspire/backend/search-service/internal/service/dto"
 	"github.com/tech-inspire/backend/search-service/pkg/logger"
 	"go.uber.org/fx"
@@ -27,34 +28,15 @@ func StartPostCreatedEventsConsumer(js nats.JetStreamContext, lc fx.Lifecycle, p
 			return fmt.Errorf("unmarshal post created event: %w", err)
 		}
 
-		postID, err := uuid.Parse(event.Post.PostId)
+		params, err := clients.PostCreatedEventFromPost(event.Post)
 		if err != nil {
-			return fmt.Errorf("parse post id: %w", err)
-		}
-
-		authorID, err := uuid.Parse(event.Post.AuthorId)
-		if err != nil {
-			return fmt.Errorf("parse post id: %w", err)
+			return fmt.Errorf("extract post created event: %w", err)
 		}
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
 
-		if len(event.Post.Images) == 0 {
-			return fmt.Errorf("post images is empty")
-		}
-
-		image := event.Post.Images[0]
-
-		err = processor.ProcessEventUpdated(ctx, dto.PostCreatedEvent{
-			PostID:      postID,
-			AuthorID:    authorID,
-			ImageKey:    image.Url,
-			ImageWidth:  uint32(image.Width),
-			ImageHeight: uint32(image.Height),
-			Description: event.Post.Description,
-			CreatedAt:   event.Post.CreatedAt.AsTime(),
-		})
+		err = processor.ProcessEventUpdated(ctx, params)
 		if err != nil {
 			return fmt.Errorf("handle post created event: %w", err)
 		}

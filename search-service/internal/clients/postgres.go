@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	pgxvec "github.com/pgvector/pgvector-go/pgx"
 	"github.com/tech-inspire/backend/search-service/internal/config"
@@ -12,14 +11,12 @@ import (
 )
 
 func NewPostgres(lc fx.Lifecycle, cfg *config.Config) (*pgxpool.Pool, error) {
-	connectCfg, err := pgxpool.ParseConfig(cfg.DB.PostgresDSN)
+	connectCfg, err := pgxpool.ParseConfig(cfg.Database.PostgresDSN)
 	if err != nil {
 		return nil, fmt.Errorf("parse postgres dsn: %w", err)
 	}
 
-	connectCfg.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
-		return pgxvec.RegisterTypes(ctx, conn)
-	}
+	connectCfg.AfterConnect = pgxvec.RegisterTypes
 
 	pool, err := pgxpool.NewWithConfig(context.Background(), connectCfg)
 	if err != nil {

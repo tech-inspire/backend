@@ -17,3 +17,9 @@ type PostCreatedEvent struct {
 	Description string
 	CreatedAt   time.Time
 }
+
+type Iterator interface {
+	Close() error
+	Err() error
+	PostIDs(yield func(uuid.UUID) bool)
+}
