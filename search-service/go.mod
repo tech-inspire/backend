@@ -16,7 +16,7 @@ require (
 	github.com/go-errors/errors v1.5.1
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4
 	github.com/google/uuid v1.6.0
-	github.com/huandu/go-sqlbuilder v1.35.0
+	github.com/huandu/go-sqlbuilder v1.35.1
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/nats-io/nats.go v1.43.0
 	github.com/pgvector/pgvector-go v0.3.0
