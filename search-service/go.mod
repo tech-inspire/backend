@@ -12,7 +12,7 @@ require (
 	connectrpc.com/validate v0.3.0
 	github.com/IBM/pgxpoolprometheus v1.1.2
 	github.com/caarlos0/env/v10 v10.0.0
-	github.com/go-chi/chi/v5 v5.2.1
+	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-errors/errors v1.5.1
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4
 	github.com/google/uuid v1.6.0
