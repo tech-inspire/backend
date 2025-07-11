@@ -27,7 +27,7 @@ require (
 	github.com/redis/go-redis/extra/redisprometheus/v9 v9.11.0
 	github.com/redis/go-redis/v9 v9.11.0
 	github.com/rs/cors v1.11.1
-	github.com/scylladb/gocqlx/v3 v3.0.2
+	github.com/scylladb/gocqlx/v3 v3.0.1
 	github.com/slok/go-http-metrics v0.13.0
 	github.com/tech-inspire/api-contracts v0.4.0
 	github.com/tech-inspire/backend/auth-service/pkg/jwt v0.0.0-20250609225114-6f4b5f3fb3d5
