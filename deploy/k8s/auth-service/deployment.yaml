@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/tech-inspire/auth-service   # {"$imagepolicy": "auth:service"}
+          image: ghcr.io/tech-inspire/backend/auth-service   # {"$imagepolicy": "auth:service"}
           ports:
             - containerPort: 8080          # HTTP
             - containerPort: 8082          # metrics
