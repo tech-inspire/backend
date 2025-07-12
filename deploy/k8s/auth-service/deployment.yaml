@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  labels: { app: auth-service }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: auth-service }
+  template:
+    metadata:
+      labels: { app: auth-service }
+    spec:
+      # ---- run migrations once before the pods go Ready -------------
+      initContainers:
+        - name: migrate
+          image: ghcr.io/TECH-INSPIRE/auth-service:{{TAG}}  # <-- tag is auto-bumped by Flux
+          command: [ "./auth-service", "migrate", "--dsn=$(POSTGRES_DSN)" ]
+          envFrom: [ { secretRef: { name: auth-env } } ]
+
+      containers:
+        - name: app
+          image: ghcr.io/TECH-INSPIRE/auth-service:{{TAG}}   # {"$imagepolicy": "auth:service"}
+          ports:
+            - containerPort: 8080          # HTTP
+            - containerPort: 8082          # metrics
+          envFrom: [ { secretRef: { name: auth-env } } ]
+          volumeMounts:
+            - name: keys
+              mountPath: /keys
+
+      volumes:
+        - name: keys
+          secret:
+            secretName: auth-jwt-keys        # populated in the Flux repo
