@@ -15,7 +15,7 @@ protobuf==6.31.0
 sentence-transformers==4.1.0
 tokenizers==0.21.1
 torch==2.7.1
-transformers==4.51.3
+transformers==4.53.2
 tqdm==4.67.1
 typing_extensions==4.13.2
 urllib3==2.4.0
