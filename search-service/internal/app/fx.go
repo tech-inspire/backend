@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	nats "github.com/nats-io/nats.go"
 	"github.com/tech-inspire/backend/auth-service/pkg/jwt"
 	"github.com/tech-inspire/backend/search-service/internal/api/metrics"
 	"github.com/tech-inspire/backend/search-service/internal/api/rpc"
@@ -13,7 +14,7 @@ import (
 	"github.com/tech-inspire/backend/search-service/internal/clients"
 	"github.com/tech-inspire/backend/search-service/internal/config"
 	"github.com/tech-inspire/backend/search-service/internal/consumer"
-	"github.com/tech-inspire/backend/search-service/internal/repository/nats"
+	natsrepo "github.com/tech-inspire/backend/search-service/internal/repository/nats"
 	"github.com/tech-inspire/backend/search-service/internal/repository/postgres"
 	"github.com/tech-inspire/backend/search-service/internal/service"
 	"github.com/tech-inspire/backend/search-service/migrations"
@@ -53,7 +54,13 @@ func Run() {
 
 		fx.Provide(
 			fx.Annotate(clients.NewEmbeddingServiceClient, fx.As(new(service.TextEmbeddingsGenerator))),
-			fx.Annotate(nats.NewImageEmbeddingsEventDispatcher, fx.As(new(service.ImageEmbeddingsTaskManager))),
+
+			fx.Annotate(func(js nats.JetStreamContext, cfg *config.Config) (*natsrepo.ImageEmbeddingsEventDispatcher, error) {
+				return natsrepo.NewImageEmbeddingsEventDispatcher(js,
+					cfg.Nats.PostsStreamName,
+					cfg.ImageEmbeddings.ImageURLBasePath,
+				)
+			}, fx.As(new(service.ImageEmbeddingsTaskManager))),
 		),
 
 		//

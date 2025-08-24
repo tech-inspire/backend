@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/nats-io/nats.go"
 	embeddingsv1 "github.com/tech-inspire/api-contracts/api/gen/go/embeddings/v1"
-	"github.com/tech-inspire/backend/search-service/internal/config"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -19,11 +18,11 @@ type ImageEmbeddingsEventDispatcher struct {
 	postImageBasePath string
 }
 
-func NewImageEmbeddingsEventDispatcher(js nats.JetStreamContext, cfg *config.Config) (*ImageEmbeddingsEventDispatcher, error) {
+func NewImageEmbeddingsEventDispatcher(js nats.JetStreamContext, streamName string, postImageBasePath string) (*ImageEmbeddingsEventDispatcher, error) {
 	return &ImageEmbeddingsEventDispatcher{
 		js:                js,
-		streamName:        cfg.Nats.PostsStreamName,
-		postImageBasePath: cfg.ImageEmbeddings.ImageURLBasePath,
+		streamName:        streamName,
+		postImageBasePath: postImageBasePath,
 	}, nil
 }
 
