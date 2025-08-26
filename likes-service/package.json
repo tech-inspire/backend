@@ -7,7 +7,7 @@
     "@bufbuild/protobuf": "^2.7.0",
     "@bufbuild/protoc-gen-es": "^2.7.0",
     "@connectrpc/connect": "^2.0.4",
-    "@connectrpc/connect-fastify": "^2.0.4",
+    "@connectrpc/connect-fastify": "^2.1.0",
     "@connectrpc/connect-node": "^2.0.4",
     "@fastify/cors": "^11.1.0",
     "@fastify/jwt": "^10.0.0",
