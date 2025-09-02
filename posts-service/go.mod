@@ -1,6 +1,6 @@
 module github.com/tech-inspire/backend/posts-service
 
-go 1.24.3
+go 1.25.0
 
 tool github.com/pressly/goose/v3/cmd/goose
 
@@ -22,7 +22,7 @@ require (
 	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-errors/errors v1.5.1
 	github.com/gocql/gocql v1.7.0
-	github.com/gofiber/fiber/v3 v3.0.0-beta.5
+	github.com/gofiber/fiber/v3 v3.0.0-rc.1
 	github.com/google/uuid v1.6.0
 	github.com/matoous/go-nanoid/v2 v2.1.0
 	github.com/nats-io/nats.go v1.45.0
