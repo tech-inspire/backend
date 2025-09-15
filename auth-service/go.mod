@@ -29,8 +29,8 @@ require (
 	github.com/matoous/go-nanoid/v2 v2.1.0
 	github.com/pressly/goose/v3 v3.24.3
 	github.com/prometheus/client_golang v1.23.0
-	github.com/redis/go-redis/extra/redisprometheus/v9 v9.12.1
-	github.com/redis/go-redis/v9 v9.12.1
+	github.com/redis/go-redis/extra/redisprometheus/v9 v9.14.0
+	github.com/redis/go-redis/v9 v9.14.0
 	github.com/rs/cors v1.11.1
 	github.com/slok/go-http-metrics v0.13.0
 	github.com/tech-inspire/api-contracts v0.4.0
@@ -73,7 +73,6 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/elastic/go-sysinfo v1.15.3 // indirect
 	github.com/elastic/go-windows v1.0.2 // indirect
-	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-faster/errors v0.7.1 // indirect
 	github.com/go-sql-driver/mysql v1.9.2 // indirect
@@ -114,7 +113,6 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.65.0 // indirect
 	github.com/vertica/vertica-sql-go v1.3.3 // indirect
-	github.com/x448/float16 v0.8.4 // indirect
 	github.com/ydb-platform/ydb-go-genproto v0.0.0-20241112172322-ea1f63298f77 // indirect
 	github.com/ydb-platform/ydb-go-sdk/v3 v3.108.1 // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
