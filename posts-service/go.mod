@@ -1,6 +1,6 @@
 module github.com/tech-inspire/backend/posts-service
 
-go 1.24.3
+go 1.25.0
 
 tool github.com/pressly/goose/v3/cmd/goose
 
@@ -22,7 +22,7 @@ require (
 	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-errors/errors v1.5.1
 	github.com/gocql/gocql v1.7.0
-	github.com/gofiber/fiber/v3 v3.0.0-beta.5
+	github.com/gofiber/fiber/v3 v3.0.0-rc.2
 	github.com/google/uuid v1.6.0
 	github.com/matoous/go-nanoid/v2 v2.1.0
 	github.com/nats-io/nats.go v1.45.0
@@ -35,7 +35,7 @@ require (
 	github.com/tech-inspire/api-contracts v0.4.0
 	github.com/tech-inspire/backend/auth-service/pkg/jwt v0.0.0-20250712130420-3723ab9601b0
 	go.uber.org/fx v1.24.0
-	golang.org/x/net v0.43.0
+	golang.org/x/net v0.44.0
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250818200422-3122310a409c
 	google.golang.org/protobuf v1.36.8
 )
@@ -111,7 +111,7 @@ require (
 	github.com/sethvargo/go-retry v0.3.0 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/stoewer/go-strcase v1.3.1 // indirect
-	github.com/tinylib/msgp v1.3.0 // indirect
+	github.com/tinylib/msgp v1.4.0 // indirect
 	github.com/tursodatabase/libsql-client-go v0.0.0-20240902231107-85af5b9d094d // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.65.0 // indirect
@@ -124,11 +124,11 @@ require (
 	go.uber.org/dig v1.19.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/crypto v0.41.0 // indirect
+	golang.org/x/crypto v0.42.0 // indirect
 	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b // indirect
-	golang.org/x/sync v0.16.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
-	golang.org/x/text v0.28.0 // indirect
+	golang.org/x/sync v0.17.0 // indirect
+	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/text v0.29.0 // indirect
 	golang.org/x/time v0.12.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250818200422-3122310a409c // indirect
 	google.golang.org/grpc v1.75.0 // indirect
