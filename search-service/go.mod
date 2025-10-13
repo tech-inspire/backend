@@ -16,7 +16,7 @@ require (
 	github.com/go-errors/errors v1.5.1
 	github.com/gofiber/fiber/v3 v3.0.0-beta.5
 	github.com/google/uuid v1.6.0
-	github.com/huandu/go-sqlbuilder v1.36.0
+	github.com/huandu/go-sqlbuilder v1.38.0
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/nats-io/nats.go v1.45.0
 	github.com/pgvector/pgvector-go v0.3.0
@@ -50,7 +50,6 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/elastic/go-sysinfo v1.15.3 // indirect
 	github.com/elastic/go-windows v1.0.2 // indirect
-	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-faster/errors v0.7.1 // indirect
 	github.com/go-sql-driver/mysql v1.9.2 // indirect
@@ -61,6 +60,7 @@ require (
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/google/cel-go v0.26.0 // indirect
+	github.com/huandu/go-clone v1.7.3 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
