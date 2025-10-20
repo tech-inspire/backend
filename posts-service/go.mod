@@ -16,7 +16,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.38.1
 	github.com/aws/aws-sdk-go-v2/config v1.31.2
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.87.1
-	github.com/aws/smithy-go v1.22.5
+	github.com/aws/smithy-go v1.23.1
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-chi/chi/v5 v5.2.2
